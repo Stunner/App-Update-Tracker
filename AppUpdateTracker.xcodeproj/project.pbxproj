@@ -18,7 +18,6 @@
 		93C7D002165F871200B5588C /* ViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93C7D000165F871200B5588C /* ViewController_iPad.xib */; };
 		93C7D00A165F88E000B5588C /* AppUpdateTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 93C7D009165F88E000B5588C /* AppUpdateTracker.m */; };
 		93C7D010165F9CCB00B5588C /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 93C7D00E165F9CCB00B5588C /* LICENSE.txt */; };
-		93C7D011165F9CCB00B5588C /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 93C7D00F165F9CCB00B5588C /* README.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,7 +38,6 @@
 		93C7D008165F88E000B5588C /* AppUpdateTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppUpdateTracker.h; sourceTree = "<group>"; };
 		93C7D009165F88E000B5588C /* AppUpdateTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppUpdateTracker.m; sourceTree = "<group>"; };
 		93C7D00E165F9CCB00B5588C /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
-		93C7D00F165F9CCB00B5588C /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,7 +58,6 @@
 			isa = PBXGroup;
 			children = (
 				93C7D00E165F9CCB00B5588C /* LICENSE.txt */,
-				93C7D00F165F9CCB00B5588C /* README.txt */,
 				93C7CFEE165F871200B5588C /* AppUpdateTracker */,
 				93C7CFE7165F871200B5588C /* Frameworks */,
 				93C7CFE5165F871200B5588C /* Products */,
@@ -166,7 +163,6 @@
 				93C7CFFF165F871200B5588C /* ViewController_iPhone.xib in Resources */,
 				93C7D002165F871200B5588C /* ViewController_iPad.xib in Resources */,
 				93C7D010165F9CCB00B5588C /* LICENSE.txt in Resources */,
-				93C7D011165F9CCB00B5588C /* README.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,6 +298,7 @@
 				93C7D007165F871200B5588C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
