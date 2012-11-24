@@ -1,7 +1,7 @@
 App-Update-Tracker
 ==================
 
-AppUpdateTracker is a simple, very lightweight iOS library intended to determine basic user behavior such as:
+AppUpdateTracker is a simple, very lightweight iOS library intended to detect basic user behavior such as:
 
 - when the user launches the app for the first time
 - when the user opens the app after updating, and from which version the user updated from
@@ -10,8 +10,42 @@ AppUpdateTracker is a simple, very lightweight iOS library intended to determine
 The tracking library/system you use is up to you, this library merely gathers the 
 aforementioned information.
 
+How to Add to Your Project
+==========================
+
+Merely add AppUpdateTracker.m and AppUpdateTracker.h to your project.
+
+Usage
+=====
+
+Import AppUPdateTracker.h in your AppDelegate class and make calls to `appDidFinishLaunching` 
+and `appWillEnterForeground` in `application:didFinishLaunchingWithOptions:` and
+`applicationWillEnterForeground:` callbacks respectively.
+
+**Example:**
+```
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    // Override point for customization after application launch.
+    
+    [AppUpdateTracker appDidFinishLaunching];
+    
+    //...
+}
+
+//...
+
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
+    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    [AppUpdateTracker appWillEnterForeground];
+}
+```
+
 License
 =======
+
 Copyright (c) 2012, Aaron Jubbal
 All rights reserved.
  
