@@ -1,11 +1,10 @@
 //
-//  AppUpdateTracker.m
-//  AppUpdateTracker
+// AppUpdateTracker.m
+// AppUpdateTracker
 //
-/* 
- Copyright (c) 2012, Aaron Jubbal
+/*
+ Copyright (c) 2013, Aaron Jubbal
  All rights reserved.
- 
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation
  files (the "Software"), to deal in the Software without
@@ -14,10 +13,8 @@
  copies of the Software, and to permit persons to whom the
  Software is furnished to do so, subject to the following
  conditions:
- 
  The above copyright notice and this permission notice shall be
  included in all copies or substantial portions of the Software.
- 
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -36,11 +33,9 @@
 #define DISPLAY_AUT_LOG_NAME @"App Update Tracker"
 
 NSString *const kAUTCurrentVersion = @"kAppiraterCurrentVersion";
-NSString *const kAUTUserUpgradedApp = @"kUserUpgradedApp";
 NSString *const kAUTPreviousVersion = @"kPreviousVersion";
 NSString *const kAUTFirstUseTime = @"kAUTFirstUseTime";
 NSString *const kAUTUseCount = @"kAUTUseCount";
-
 
 @interface AppUpdateTracker ()
 
@@ -50,40 +45,70 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
 
 @implementation AppUpdateTracker
 
+#pragma mark - Getters
+
++ (NSString *)getTrackingVersion {
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kAUTCurrentVersion];
+}
+
++ (NSString *)getPreviousVersion {
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kAUTPreviousVersion];
+}
+
++ (double)getFirstUseTime {
+    return [[NSUserDefaults standardUserDefaults] doubleForKey:kAUTFirstUseTime];
+}
+
++ (NSUInteger)getUseCount {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:kAUTUseCount];
+}
+
+#pragma mark - Core Functionality
+
 + (void)incrementUseCount {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     // increment the use count
-    int useCount = [userDefaults integerForKey:kAUTUseCount];
+    NSUInteger useCount = [userDefaults integerForKey:kAUTUseCount];
     useCount++;
 #if APP_UPDATE_TRACKER_DEBUG
     NSLog(@"%@, useCount++: %d", DISPLAY_AUT_LOG_NAME, useCount);
 #endif
     [userDefaults setInteger:useCount forKey:kAUTUseCount];
     [userDefaults synchronize];
+    
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObject:[NSNumber numberWithInteger:useCount]]
+                                                           forKeys:[NSArray arrayWithObject:@"useCount"]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AUTUseCountUpdatedNotification
+                                                        object:self
+                                                      userInfo:userInfo];
 }
 
 + (void)appDidFinishLaunching {
-	// get the app's version
-	NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-	
-	// get the version number that we've been tracking
-	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-	NSString *trackingVersion = [userDefaults stringForKey:kAUTCurrentVersion];
-	
+    // get the app's version
+    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    
+    // get the version number that we've been tracking
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *trackingVersion = [userDefaults stringForKey:kAUTCurrentVersion];
+    
 #if APP_UPDATE_TRACKER_DEBUG
     NSLog(@"%@, trackingVersion: %@", DISPLAY_AUT_LOG_NAME, trackingVersion);
 #endif
-	
-	if ([trackingVersion isEqualToString:version]) {
+    
+    if ([trackingVersion isEqualToString:version]) {
         [AppUpdateTracker incrementUseCount];
-	} else { // it's an upgraded or new version of the app
+    } else { // it's an upgraded or new version of the app
         if (trackingVersion) { // we have read the old version - user updated app
 #if APP_UPDATE_TRACKER_DEBUG
             NSLog(@"%@, app updated from %@", DISPLAY_AUT_LOG_NAME, trackingVersion);
 #endif
             
             // app updated to current version from version found in <trackingVersion>
-            // >>>perform tracking here<<<
+            NSDictionary *userInfo = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObject:trackingVersion]
+                                                                   forKeys:[NSArray arrayWithObject:@"oldVersion"]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:AUTAppUpdatedNotification
+                                                                object:self
+                                                              userInfo:userInfo];
             
         } else { // no old version exists - first time opening after install
 #if APP_UPDATE_TRACKER_DEBUG
@@ -96,19 +121,23 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
             }
             
             // fresh install of the app
-            // >>>perform tracking here<<<
+            NSDictionary *userInfo = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObject:[NSNumber numberWithDouble:timeInterval]]
+                                                                   forKeys:[NSArray arrayWithObject:@"firstUseTime"]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:AUTAppUpdatedNotification
+                                                                object:self
+                                                              userInfo:userInfo];
             
         }
-		// include what version user updated from, nil if user didn't update 
+        // include what version user updated from, nil if user didn't update
         // (only for initial session)
-		[userDefaults setObject:trackingVersion forKey:kAUTPreviousVersion];
-		[userDefaults setObject:version forKey:kAUTCurrentVersion];
-		[userDefaults setDouble:[[NSDate date] timeIntervalSince1970] 
+        [userDefaults setObject:trackingVersion forKey:kAUTPreviousVersion];
+        [userDefaults setObject:version forKey:kAUTCurrentVersion];
+        [userDefaults setDouble:[[NSDate date] timeIntervalSince1970]
                          forKey:kAUTFirstUseTime];
-		[userDefaults setInteger:1 forKey:kAUTUseCount];
-	}
-	
-	[userDefaults synchronize];
+        [userDefaults setInteger:1 forKey:kAUTUseCount];
+    }
+    
+    [userDefaults synchronize];
 }
 
 + (void)appWillEnterForeground {
