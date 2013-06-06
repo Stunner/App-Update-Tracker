@@ -34,14 +34,12 @@
 
 @interface AppUpdateTracker : NSObject
 
++ (id)sharedInstance;
+
 // Getters
 + (NSString *)getTrackingVersion;
 + (NSString *)getPreviousVersion;
 + (double)getFirstUseTime;
 + (NSUInteger)getUseCount;
-
-// Core Functionality
-+ (void)appDidFinishLaunching;
-+ (void)appWillEnterForeground;
 
 @end

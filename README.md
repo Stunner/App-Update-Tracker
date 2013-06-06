@@ -18,7 +18,7 @@ Merely add AppUpdateTracker.m and AppUpdateTracker.h to your project.
 Usage
 =====
 
-Import AppUPdateTracker.h in your AppDelegate class and make calls to `appDidFinishLaunching` 
+Import AppUpdateTracker.h in your AppDelegate class and make calls to `appDidFinishLaunching` 
 and `appWillEnterForeground` in `application:didFinishLaunchingWithOptions:` and
 `applicationWillEnterForeground:` callbacks respectively.
 

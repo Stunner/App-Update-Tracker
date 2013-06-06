@@ -39,11 +39,36 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
 
 @interface AppUpdateTracker ()
 
-+ (void)incrementUseCount;
+- (void)incrementUseCount;
+- (void)appDidFinishLaunching;
+- (void)appWillEnterForeground;
 
 @end
 
 @implementation AppUpdateTracker
+
+- (id)init {
+    if (self = [super init]) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(appDidFinishLaunching)
+                                                     name:UIApplicationDidFinishLaunchingNotification
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(appWillEnterForeground)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:nil];
+    }
+    return self;
+}
+
++ (id)sharedInstance {
+    static dispatch_once_t once;
+    static id sharedInstance;
+    dispatch_once(&once, ^{
+        sharedInstance = [[self alloc] init];
+    });
+    return sharedInstance;
+}
 
 #pragma mark - Getters
 
@@ -65,7 +90,7 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
 
 #pragma mark - Core Functionality
 
-+ (void)incrementUseCount {
+- (void)incrementUseCount {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     // increment the use count
     NSUInteger useCount = [userDefaults integerForKey:kAUTUseCount];
@@ -83,7 +108,7 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
                                                       userInfo:userInfo];
 }
 
-+ (void)appDidFinishLaunching {
+- (void)appDidFinishLaunching {
     // get the app's version
     NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     
@@ -96,7 +121,7 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
 #endif
     
     if ([trackingVersion isEqualToString:version]) {
-        [AppUpdateTracker incrementUseCount];
+        [self incrementUseCount];
     } else { // it's an upgraded or new version of the app
         if (trackingVersion) { // we have read the old version - user updated app
 #if APP_UPDATE_TRACKER_DEBUG
@@ -140,8 +165,8 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
     [userDefaults synchronize];
 }
 
-+ (void)appWillEnterForeground {
-    [AppUpdateTracker incrementUseCount];
+- (void)appWillEnterForeground {
+    [self incrementUseCount];
 }
 
 @end
