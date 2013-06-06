@@ -40,8 +40,8 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
 @interface AppUpdateTracker ()
 
 - (void)incrementUseCount;
-- (void)appDidFinishLaunching;
-- (void)appWillEnterForeground;
+- (void)appDidFinishLaunching:(NSNotification *)notification;
+- (void)appWillEnterForeground:(NSNotification *)notification;
 
 @end
 
@@ -50,11 +50,11 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
 - (id)init {
     if (self = [super init]) {
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(appDidFinishLaunching)
+                                                 selector:@selector(appDidFinishLaunching:)
                                                      name:UIApplicationDidFinishLaunchingNotification
                                                    object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(appWillEnterForeground)
+                                                 selector:@selector(appWillEnterForeground:)
                                                      name:UIApplicationWillEnterForegroundNotification
                                                    object:nil];
     }
@@ -102,13 +102,13 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
     [userDefaults synchronize];
     
     NSDictionary *userInfo = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObject:[NSNumber numberWithInteger:useCount]]
-                                                           forKeys:[NSArray arrayWithObject:@"useCount"]];
+                                                           forKeys:[NSArray arrayWithObject:@"USE_COUNT"]];
     [[NSNotificationCenter defaultCenter] postNotificationName:AUTUseCountUpdatedNotification
                                                         object:self
                                                       userInfo:userInfo];
 }
 
-- (void)appDidFinishLaunching {
+- (void)appDidFinishLaunching:(NSNotification *)notification {
     // get the app's version
     NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     
@@ -130,7 +130,7 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
             
             // app updated to current version from version found in <trackingVersion>
             NSDictionary *userInfo = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObject:trackingVersion]
-                                                                   forKeys:[NSArray arrayWithObject:@"oldVersion"]];
+                                                                   forKeys:[NSArray arrayWithObject:@"OLD_VERSION"]];
             [[NSNotificationCenter defaultCenter] postNotificationName:AUTAppUpdatedNotification
                                                                 object:self
                                                               userInfo:userInfo];
@@ -147,8 +147,8 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
             
             // fresh install of the app
             NSDictionary *userInfo = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObject:[NSNumber numberWithDouble:timeInterval]]
-                                                                   forKeys:[NSArray arrayWithObject:@"firstUseTime"]];
-            [[NSNotificationCenter defaultCenter] postNotificationName:AUTAppUpdatedNotification
+                                                                   forKeys:[NSArray arrayWithObject:@"FIRST_USE_TIME"]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:AUTFreshInstallNotification
                                                                 object:self
                                                               userInfo:userInfo];
             
@@ -165,7 +165,7 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
     [userDefaults synchronize];
 }
 
-- (void)appWillEnterForeground {
+- (void)appWillEnterForeground:(NSNotification *)notification {
     [self incrementUseCount];
 }
 

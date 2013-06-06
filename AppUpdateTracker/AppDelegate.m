@@ -39,12 +39,37 @@
 @synthesize window = _window;
 @synthesize viewController = _viewController;
 
+- (void)appFreshInstall:(NSNotification *)notification {
+    NSLog(@"App Fresh Install Notification Received! %@", [[notification userInfo] objectForKey:@"FIRST_USE_TIME"]);
+}
+
+- (void)appUpdated:(NSNotification *)notification {
+    NSLog(@"App Updated Notification Received! %@", [[notification userInfo] objectForKey:@"OLD_VERSION"]);
+}
+
+- (void)appUseIncremented:(NSNotification *)notification {
+    NSLog(@"App Use Incremented Notification Received! %@", [[notification userInfo] objectForKey:@"USE_COUNT"]);
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     
     [AppUpdateTracker sharedInstance]; // initialize the tracker
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appFreshInstall:)
+                                                 name:AUTFreshInstallNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appUpdated:)
+                                                 name:AUTAppUpdatedNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appUseIncremented:)
+                                                 name:AUTUseCountUpdatedNotification
+                                               object:nil];
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         self.viewController = [[ViewController alloc] initWithNibName:@"ViewController_iPhone" bundle:nil];
