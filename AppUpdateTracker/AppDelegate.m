@@ -54,10 +54,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
     
-    [AppUpdateTracker sharedInstance]; // initialize the tracker
-    
+    // IMPORTANT: Must subscribe to notifications *before* initializing the tracker.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(appFreshInstall:)
                                                  name:AUTFreshInstallNotification
@@ -70,6 +68,8 @@
                                              selector:@selector(appUseIncremented:)
                                                  name:AUTUseCountUpdatedNotification
                                                object:nil];
+    
+    [AppUpdateTracker sharedInstance]; // initialize the tracker
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         self.viewController = [[ViewController alloc] initWithNibName:@"ViewController_iPhone" bundle:nil];

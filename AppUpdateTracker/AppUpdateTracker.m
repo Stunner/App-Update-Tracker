@@ -40,7 +40,7 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
 @interface AppUpdateTracker ()
 
 - (void)incrementUseCount;
-- (void)appDidFinishLaunching:(NSNotification *)notification;
+- (void)appDidFinishLaunching;
 - (void)appWillEnterForeground:(NSNotification *)notification;
 
 @end
@@ -50,13 +50,10 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
 - (id)init {
     if (self = [super init]) {
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(appDidFinishLaunching:)
-                                                     name:UIApplicationDidFinishLaunchingNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(appWillEnterForeground:)
                                                      name:UIApplicationWillEnterForegroundNotification
                                                    object:nil];
+        [self appDidFinishLaunching];
     }
     return self;
 }
@@ -108,7 +105,7 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
                                                       userInfo:userInfo];
 }
 
-- (void)appDidFinishLaunching:(NSNotification *)notification {
+- (void)appDidFinishLaunching {
     // get the app's version
     NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     
