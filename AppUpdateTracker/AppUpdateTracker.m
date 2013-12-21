@@ -32,8 +32,8 @@
 
 #define DISPLAY_AUT_LOG_NAME @"App Update Tracker"
 
-NSString *const kAUTCurrentVersion = @"kAppiraterCurrentVersion";
-NSString *const kAUTPreviousVersion = @"kPreviousVersion";
+NSString *const kAUTCurrentVersion = @"kAUTCurrentVersion";
+NSString *const kAUTPreviousVersion = @"kAUTPreviousVersion";
 NSString *const kAUTFirstUseTime = @"kAUTFirstUseTime";
 NSString *const kAUTUseCount = @"kAUTUseCount";
 
