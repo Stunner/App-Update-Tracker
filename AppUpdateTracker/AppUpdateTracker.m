@@ -36,6 +36,7 @@ NSString *const kAUTCurrentVersion = @"kAUTCurrentVersion";
 NSString *const kAUTPreviousVersion = @"kAUTPreviousVersion";
 NSString *const kAUTFirstUseTime = @"kAUTFirstUseTime";
 NSString *const kAUTUseCount = @"kAUTUseCount";
+NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
 
 @interface AppUpdateTracker ()
 
@@ -85,6 +86,10 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
     return [[NSUserDefaults standardUserDefaults] integerForKey:kAUTUseCount];
 }
 
++ (BOOL)getUserUpgradedApp {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:kAUTUserUpgradedApp];
+}
+
 #pragma mark - Core Functionality
 
 - (void)incrementUseCount {
@@ -106,6 +111,8 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
 }
 
 - (void)appDidFinishLaunching {
+    NSLog(@"APP DID FINISH LAUNCHING");
+    
     // get the app's version
     NSString *shortVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]; //has priority
     NSString *longVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
@@ -129,6 +136,8 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
     
     if ([trackingVersion isEqualToString:version]) {
         [self incrementUseCount];
+        [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
+        NSLog(@"User Upgraded? %d", [userDefaults boolForKey:kAUTUserUpgradedApp]);
     } else { // it's an upgraded or new version of the app
         if (trackingVersion) { // we have read the old version - user updated app
 #if APP_UPDATE_TRACKER_DEBUG
@@ -141,7 +150,8 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
             [[NSNotificationCenter defaultCenter] postNotificationName:AUTAppUpdatedNotification
                                                                 object:self
                                                               userInfo:userInfo];
-            
+            [userDefaults setBool:YES forKey:kAUTUserUpgradedApp];
+            NSLog(@"User Upgraded? %d", [userDefaults boolForKey:kAUTUserUpgradedApp]);
         } else { // no old version exists - first time opening after install
 #if APP_UPDATE_TRACKER_DEBUG
             NSLog(@"%@, fresh install detected", DISPLAY_AUT_LOG_NAME);
@@ -158,6 +168,7 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
             [[NSNotificationCenter defaultCenter] postNotificationName:AUTFreshInstallNotification
                                                                 object:self
                                                               userInfo:userInfo];
+            [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
             
         }
         // include what version user updated from, nil if user didn't update
