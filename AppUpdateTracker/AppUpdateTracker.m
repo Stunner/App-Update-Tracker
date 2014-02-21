@@ -107,7 +107,17 @@ NSString *const kAUTUseCount = @"kAUTUseCount";
 
 - (void)appDidFinishLaunching {
     // get the app's version
-    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    NSString *shortVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]; //has priority
+    NSString *longVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+    
+    NSString *version;
+    if (shortVersion) {
+        version = shortVersion;
+    } else if (longVersion) {
+        version = longVersion;
+    } else {
+        NSLog(@"ERROR: No bundle version found. Current version is nil.");
+    }
     
     // get the version number that we've been tracking
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
