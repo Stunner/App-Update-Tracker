@@ -29,17 +29,34 @@ and `appWillEnterForeground` in `application:didFinishLaunchingWithOptions:` and
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     
-    [AppUpdateTracker appDidFinishLaunching];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appFreshInstall:)
+                                                 name:AUTFreshInstallNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appUpdated:)
+                                                 name:AUTAppUpdatedNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appUseIncremented:)
+                                                 name:AUTUseCountUpdatedNotification
+                                               object:nil];
+    [AppUpdateTracker sharedInstance];
     
     //...
 }
 
-//...
+- (void)appFreshInstall:(NSNotification *)notification {
+    NSLog(@"App Fresh Install Notification Received! %@", [[notification userInfo] objectForKey:@"FIRST_USE_TIME"]);
+}
 
-- (void)applicationWillEnterForeground:(UIApplication *)application
-{
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    [AppUpdateTracker appWillEnterForeground];
+- (void)appUpdated:(NSNotification *)notification {
+    NSString *oldVersion = [[notification userInfo] objectForKey:@"OLD_VERSION"];
+    NSLog(@"App Updated Notification Received! %@", oldVersion);
+}
+
+- (void)appUseIncremented:(NSNotification *)notification {
+    NSLog(@"App Use Incremented Notification Received! %@", [[notification userInfo] objectForKey:@"USE_COUNT"]);
 }
 ```
 

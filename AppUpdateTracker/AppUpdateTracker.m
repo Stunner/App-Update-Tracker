@@ -98,7 +98,7 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
     NSUInteger useCount = [userDefaults integerForKey:kAUTUseCount];
     useCount++;
 #if APP_UPDATE_TRACKER_DEBUG
-    NSLog(@"%@, useCount++: %d", DISPLAY_AUT_LOG_NAME, useCount);
+    NSLog(@"%@, useCount++: %lu", DISPLAY_AUT_LOG_NAME, (unsigned long)useCount);
 #endif
     [userDefaults setInteger:useCount forKey:kAUTUseCount];
     [userDefaults synchronize];
