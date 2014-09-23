@@ -111,7 +111,6 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
 }
 
 - (void)appDidFinishLaunching {
-    NSLog(@"APP DID FINISH LAUNCHING");
     
     // get the app's version
     NSString *shortVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]; //has priority
@@ -123,7 +122,9 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
     } else if (longVersion) {
         version = longVersion;
     } else {
-        NSLog(@"ERROR: No bundle version found. Current version is nil.");
+#if APP_UPDATE_TRACKER_DEBUG
+        NSLog(@"App Update Tracker ERROR: No bundle version found. Current version is nil.");
+#endif
     }
     
     // get the version number that we've been tracking
@@ -137,7 +138,9 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
     if ([trackingVersion isEqualToString:version]) {
         [self incrementUseCount];
         [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
+#if APP_UPDATE_TRACKER_DEBUG
         NSLog(@"User Upgraded? %d", [userDefaults boolForKey:kAUTUserUpgradedApp]);
+#endif
     } else { // it's an upgraded or new version of the app
         if (trackingVersion) { // we have read the old version - user updated app
 #if APP_UPDATE_TRACKER_DEBUG
@@ -151,7 +154,9 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
                                                                 object:self
                                                               userInfo:userInfo];
             [userDefaults setBool:YES forKey:kAUTUserUpgradedApp];
+#if APP_UPDATE_TRACKER_DEBUG
             NSLog(@"User Upgraded? %d", [userDefaults boolForKey:kAUTUserUpgradedApp]);
+#endif
         } else { // no old version exists - first time opening after install
 #if APP_UPDATE_TRACKER_DEBUG
             NSLog(@"%@, fresh install detected", DISPLAY_AUT_LOG_NAME);
