@@ -40,15 +40,15 @@
 @synthesize viewController = _viewController;
 
 - (void)appFreshInstall:(NSNotification *)notification {
-    NSLog(@"App Fresh Install Notification Received! %@", [[notification userInfo] objectForKey:@"FIRST_USE_TIME"]);
+    NSLog(@"App Fresh Install Notification Received! %@", [[notification userInfo] objectForKey:kAUTNotificationUserInfoFirstUseTimeKey]);
 }
 
 - (void)appUpdated:(NSNotification *)notification {
-    NSLog(@"App Updated Notification Received! %@", [[notification userInfo] objectForKey:@"OLD_VERSION"]);
+    NSLog(@"App Updated Notification Received! %@", [[notification userInfo] objectForKey:kAUTNotificationUserInfoOldVersionKey]);
 }
 
 - (void)appUseIncremented:(NSNotification *)notification {
-    NSLog(@"App Use Incremented Notification Received! %@", [[notification userInfo] objectForKey:@"USE_COUNT"]);
+    NSLog(@"App Use Incremented Notification Received! %@", [[notification userInfo] objectForKey:kAUTNotificationUserInfoUseCountKey]);
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions

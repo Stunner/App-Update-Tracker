@@ -32,6 +32,10 @@
 #define AUTAppUpdatedNotification @"AUTAppUpdatedNotification"
 #define AUTFreshInstallNotification @"AUTFreshInstallNotification"
 
+#define kAUTNotificationUserInfoUseCountKey @"AUTNotificationUserInfoUseCountKey"
+#define kAUTNotificationUserInfoOldVersionKey @"AUTNotificationUserInfoOldVersionKey"
+#define kAUTNotificationUserInfoFirstUseTimeKey @"AUTNotificationUserInfoFirstUseTimeKey"
+
 @interface AppUpdateTracker : NSObject
 
 + (id)sharedInstance;

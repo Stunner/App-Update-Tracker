@@ -30,7 +30,7 @@
 
 #define APP_UPDATE_TRACKER_DEBUG 1
 
-#define DISPLAY_AUT_LOG_NAME @"App Update Tracker"
+#define DISPLAY_AUT_LOG_NAME @"AUT >"
 
 NSString *const kAUTCurrentVersion = @"kAUTCurrentVersion";
 NSString *const kAUTPreviousVersion = @"kAUTPreviousVersion";
@@ -42,7 +42,6 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
 
 - (void)incrementUseCount;
 - (void)appDidFinishLaunching;
-- (void)appWillEnterForeground:(NSNotification *)notification;
 
 @end
 
@@ -50,10 +49,13 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
 
 - (id)init {
     if (self = [super init]) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(appWillEnterForeground:)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
+        __block AppUpdateTracker *weakSelf = self;
+        [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification
+                                                          object:nil
+                                                           queue:[NSOperationQueue mainQueue]
+                                                      usingBlock:^(NSNotification *note) {
+                                                          [weakSelf incrementUseCount];
+                                                      }];
         [self appDidFinishLaunching];
     }
     return self;
@@ -98,13 +100,12 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
     NSUInteger useCount = [userDefaults integerForKey:kAUTUseCount];
     useCount++;
 #if APP_UPDATE_TRACKER_DEBUG
-    NSLog(@"%@, useCount++: %lu", DISPLAY_AUT_LOG_NAME, (unsigned long)useCount);
+    NSLog(@"%@ useCount++: %lu", DISPLAY_AUT_LOG_NAME, (unsigned long)useCount);
 #endif
     [userDefaults setInteger:useCount forKey:kAUTUseCount];
     [userDefaults synchronize];
     
-    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObject:[NSNumber numberWithInteger:useCount]]
-                                                           forKeys:[NSArray arrayWithObject:@"USE_COUNT"]];
+    NSDictionary *userInfo = @{kAUTNotificationUserInfoUseCountKey : [NSNumber numberWithInteger:useCount]};
     [[NSNotificationCenter defaultCenter] postNotificationName:AUTUseCountUpdatedNotification
                                                         object:self
                                                       userInfo:userInfo];
@@ -132,7 +133,7 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
     NSString *trackingVersion = [userDefaults stringForKey:kAUTCurrentVersion];
     
 #if APP_UPDATE_TRACKER_DEBUG
-    NSLog(@"%@, trackingVersion: %@", DISPLAY_AUT_LOG_NAME, trackingVersion);
+    NSLog(@"%@ trackingVersion: %@", DISPLAY_AUT_LOG_NAME, trackingVersion);
 #endif
     
     if ([trackingVersion isEqualToString:version]) {
@@ -148,8 +149,7 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
 #endif
             
             // app updated to current version from version found in <trackingVersion>
-            NSDictionary *userInfo = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObject:trackingVersion]
-                                                                   forKeys:[NSArray arrayWithObject:@"OLD_VERSION"]];
+            NSDictionary *userInfo = @{kAUTNotificationUserInfoOldVersionKey : trackingVersion};
             [[NSNotificationCenter defaultCenter] postNotificationName:AUTAppUpdatedNotification
                                                                 object:self
                                                               userInfo:userInfo];
@@ -159,7 +159,7 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
 #endif
         } else { // no old version exists - first time opening after install
 #if APP_UPDATE_TRACKER_DEBUG
-            NSLog(@"%@, fresh install detected", DISPLAY_AUT_LOG_NAME);
+            NSLog(@"%@ fresh install detected", DISPLAY_AUT_LOG_NAME);
 #endif
             NSTimeInterval timeInterval = [userDefaults doubleForKey:kAUTFirstUseTime];
             if (timeInterval == 0) {
@@ -168,8 +168,7 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
             }
             
             // fresh install of the app
-            NSDictionary *userInfo = [[NSDictionary alloc] initWithObjects:[NSArray arrayWithObject:[NSNumber numberWithDouble:timeInterval]]
-                                                                   forKeys:[NSArray arrayWithObject:@"FIRST_USE_TIME"]];
+            NSDictionary *userInfo = @{kAUTNotificationUserInfoFirstUseTimeKey : [NSNumber numberWithDouble:timeInterval]};
             [[NSNotificationCenter defaultCenter] postNotificationName:AUTFreshInstallNotification
                                                                 object:self
                                                               userInfo:userInfo];
@@ -186,10 +185,6 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
     }
     
     [userDefaults synchronize];
-}
-
-- (void)appWillEnterForeground:(NSNotification *)notification {
-    [self incrementUseCount];
 }
 
 @end
