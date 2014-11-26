@@ -36,6 +36,11 @@
 #define kAUTNotificationUserInfoOldVersionKey @"AUTNotificationUserInfoOldVersionKey"
 #define kAUTNotificationUserInfoFirstUseTimeKey @"AUTNotificationUserInfoFirstUseTimeKey"
 
+/**
+ Registering for an event with blocks guarentees that the event that occured during that app session
+ will be run *once and only once* (even well after initialization of AppUpdateTracker). This is contrary 
+ to the behavior of AUT notifications, that are posted once upon initialization.
+ */
 @interface AppUpdateTracker : NSObject
 
 + (id)sharedInstance;

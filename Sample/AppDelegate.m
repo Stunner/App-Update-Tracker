@@ -53,7 +53,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    //=============================================================//
+    // register for AppUpdateTracker events:
     
     // IMPORTANT: Must subscribe to notifications *before* initializing the tracker.
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -68,7 +69,10 @@
                                              selector:@selector(appUseIncremented:)
                                                  name:AUTUseCountUpdatedNotification
                                                object:nil];
+    [AppUpdateTracker sharedInstance]; // initialize the tracker
     
+    // Note: Above call to [AppUpdateTracker sharedInstance] is not necessary when registering for blocks
+    // (the call is made internally):
     [AppUpdateTracker registerForAppUpdatesWithBlock:^(NSString *oldVersion) {
         NSLog(@"app updated from: %@", oldVersion);
     }];
@@ -78,13 +82,16 @@
     [AppUpdateTracker registerForIncrementedUseCountWithBlock:^(NSUInteger useCount) {
         NSLog(@"incremented use count to: %lu", (unsigned long)useCount);
     }];
-    [AppUpdateTracker sharedInstance]; // initialize the tracker
     
+    //=============================================================//
+    
+    // the usual application:didFinishLaunchingWithOptions: stuff...
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         self.viewController = [[ViewController alloc] initWithNibName:@"ViewController_iPhone" bundle:nil];
     } else {
         self.viewController = [[ViewController alloc] initWithNibName:@"ViewController_iPad" bundle:nil];
     }
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     return YES;
