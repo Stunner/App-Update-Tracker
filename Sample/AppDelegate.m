@@ -69,6 +69,15 @@
                                                  name:AUTUseCountUpdatedNotification
                                                object:nil];
     
+    [AppUpdateTracker registerForAppUpdatesWithBlock:^(NSString *oldVersion) {
+        NSLog(@"app updated from: %@", oldVersion);
+    }];
+    [AppUpdateTracker registerForFirstInstallWithBlock:^(NSTimeInterval installTimeSinceEpoch) {
+        NSLog(@"first install detected: %f", installTimeSinceEpoch);
+    }];
+    [AppUpdateTracker registerForIncrementedUseCountWithBlock:^(NSUInteger useCount) {
+        NSLog(@"incremented use count to: %lu", (unsigned long)useCount);
+    }];
     [AppUpdateTracker sharedInstance]; // initialize the tracker
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {

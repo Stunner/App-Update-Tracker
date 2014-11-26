@@ -46,4 +46,8 @@
 + (double)getFirstUseTime;
 + (NSUInteger)getUseCount;
 
++ (void)registerForFirstInstallWithBlock:(void (^)(NSTimeInterval installTimeSinceEpoch))block;
++ (void)registerForIncrementedUseCountWithBlock:(void (^)(NSUInteger useCount))block;
++ (void)registerForAppUpdatesWithBlock:(void (^)(NSString *oldVersion))block;
+
 @end

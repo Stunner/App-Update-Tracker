@@ -38,7 +38,17 @@ NSString *const kAUTFirstUseTime = @"kAUTFirstUseTime";
 NSString *const kAUTUseCount = @"kAUTUseCount";
 NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
 
+NSString *const kFirstLaunchTimeKey = @"kFirstLaunchTimeKey";
+NSString *const kUseCountKey = @"kUseCountEventKey";
+NSString *const kOldVersionKey = @"kOldVersionKey";
+
 @interface AppUpdateTracker ()
+
+@property (nonatomic, copy) void (^firstInstallBlock)(NSTimeInterval installTimeSinceEpoch);
+@property (nonatomic, copy) void (^useCountBlock)(NSUInteger useCount);
+@property (nonatomic, copy) void (^appUpdatedBlock)(NSString *oldVersion);
+
+@property (nonatomic, strong) NSMutableDictionary *postedEventsDictionary;
 
 - (void)incrementUseCount;
 - (void)appDidFinishLaunching;
@@ -49,6 +59,8 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
 
 - (id)init {
     if (self = [super init]) {
+        self.postedEventsDictionary = [[NSMutableDictionary alloc] initWithCapacity:3];
+        
         __block AppUpdateTracker *weakSelf = self;
         [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification
                                                           object:nil
@@ -92,7 +104,50 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
     return [[NSUserDefaults standardUserDefaults] integerForKey:kAUTUserUpgradedApp];
 }
 
-#pragma mark - Core Functionality
+#pragma mark - Setters
+
+- (void)setFirstInstallBlock:(void (^)(NSTimeInterval))firstInstallBlock {
+    _firstInstallBlock = firstInstallBlock;
+    NSNumber *firstLaunchTime = [self.postedEventsDictionary objectForKey:kFirstLaunchTimeKey];
+    if (firstLaunchTime) {
+        firstInstallBlock([firstLaunchTime doubleValue]);
+        [self.postedEventsDictionary removeObjectForKey:kFirstLaunchTimeKey];
+    }
+}
+
+- (void)setUseCountBlock:(void (^)(NSUInteger))useCountBlock {
+    _useCountBlock = useCountBlock;
+    NSNumber *useCount = [self.postedEventsDictionary objectForKey:kUseCountKey];
+    if (useCount) {
+        useCountBlock([useCount integerValue]);
+        [self.postedEventsDictionary removeObjectForKey:kUseCountKey];
+    }
+}
+
+- (void)setAppUpdatedBlock:(void (^)(NSString *))appUpdatedBlock {
+    _appUpdatedBlock = appUpdatedBlock;
+    NSString *oldVersion = [self.postedEventsDictionary objectForKey:kOldVersionKey];
+    if (oldVersion) {
+        appUpdatedBlock(oldVersion);
+        [self.postedEventsDictionary removeObjectForKey:kOldVersionKey];
+    }
+}
+
+#pragma mark - Public
+
++ (void)registerForFirstInstallWithBlock:(void (^)(NSTimeInterval installTimeSinceEpoch))block {
+    [[AppUpdateTracker sharedInstance] setFirstInstallBlock:block];
+}
+
++ (void)registerForIncrementedUseCountWithBlock:(void (^)(NSUInteger useCount))block {
+    [[AppUpdateTracker sharedInstance] setUseCountBlock:block];
+}
+
++ (void)registerForAppUpdatesWithBlock:(void (^)(NSString *oldVersion))block {
+    [[AppUpdateTracker sharedInstance] setAppUpdatedBlock:block];
+}
+
+#pragma mark - Internal Methods
 
 - (void)incrementUseCount {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -105,10 +160,15 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
     [userDefaults setInteger:useCount forKey:kAUTUseCount];
     [userDefaults synchronize];
     
-    NSDictionary *userInfo = @{kAUTNotificationUserInfoUseCountKey : [NSNumber numberWithInteger:useCount]};
+    NSNumber *useCountNumber = @(useCount);
+    NSDictionary *userInfo = @{kAUTNotificationUserInfoUseCountKey : useCountNumber};
     [[NSNotificationCenter defaultCenter] postNotificationName:AUTUseCountUpdatedNotification
                                                         object:self
                                                       userInfo:userInfo];
+    [self.postedEventsDictionary setObject:useCountNumber forKey:kUseCountKey];
+    if (self.useCountBlock) {
+        self.useCountBlock(useCount);
+    }
 }
 
 - (void)appDidFinishLaunching {
@@ -153,6 +213,10 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
             [[NSNotificationCenter defaultCenter] postNotificationName:AUTAppUpdatedNotification
                                                                 object:self
                                                               userInfo:userInfo];
+            [self.postedEventsDictionary setObject:trackingVersion forKey:kOldVersionKey];
+            if (self.appUpdatedBlock) {
+                self.appUpdatedBlock(trackingVersion);
+            }
             [userDefaults setBool:YES forKey:kAUTUserUpgradedApp];
 #if APP_UPDATE_TRACKER_DEBUG
             NSLog(@"User Upgraded? %d", [userDefaults boolForKey:kAUTUserUpgradedApp]);
@@ -168,10 +232,15 @@ NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
             }
             
             // fresh install of the app
-            NSDictionary *userInfo = @{kAUTNotificationUserInfoFirstUseTimeKey : [NSNumber numberWithDouble:timeInterval]};
+            NSNumber *timeIntervalNumber = @(timeInterval);
+            NSDictionary *userInfo = @{kAUTNotificationUserInfoFirstUseTimeKey : timeIntervalNumber};
             [[NSNotificationCenter defaultCenter] postNotificationName:AUTFreshInstallNotification
                                                                 object:self
                                                               userInfo:userInfo];
+            [self.postedEventsDictionary setObject:timeIntervalNumber forKey:kFirstLaunchTimeKey];
+            if (self.firstInstallBlock) {
+                self.firstInstallBlock(timeInterval);
+            }
             [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
             
         }
