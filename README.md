@@ -37,20 +37,9 @@ Import `AppUpdateTracker.h` in your `AppDelegate` class and register for `AppUpd
     
     //...
 }
-
-- (void)appFreshInstall:(NSNotification *)notification {
-    NSLog(@"App Fresh Install Notification Received! %@", [[notification userInfo] objectForKey:@"FIRST_USE_TIME"]);
-}
-
-- (void)appUpdated:(NSNotification *)notification {
-    NSString *oldVersion = [[notification userInfo] objectForKey:@"OLD_VERSION"];
-    NSLog(@"App Updated Notification Received! %@", oldVersion);
-}
-
-- (void)appUseIncremented:(NSNotification *)notification {
-    NSLog(@"App Use Incremented Notification Received! %@", [[notification userInfo] objectForKey:@"USE_COUNT"]);
-}
 ```
+
+Consult the sample project for more info.
 
 License
 =======
