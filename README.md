@@ -4,44 +4,36 @@ App-Update-Tracker
 AppUpdateTracker is a simple, very lightweight iOS library intended to detect basic user behavior such as:
 
 - when the user launches the app for the first time
-- when the user opens the app after updating, and from which version the user updated from
+- when the user opens the app after updating, and **from which version the user updated from**
 - number of times the user opened a specific version of the app
 
-The tracking library/system you use is up to you, this library merely gathers the 
-aforementioned information.
+This library posts an alert or executes a block with information on one (and only one) of the 3 aforementioned behaviors per app session (each time the app is run).
 
 How to Add to Your Project
 ==========================
 
-Merely add AppUpdateTracker.m and AppUpdateTracker.h to your project.
+Merely add AppUpdateTracker folder to your project.
 
 Usage
 =====
 
-Import AppUpdateTracker.h in your AppDelegate class and make calls to `appDidFinishLaunching` 
-and `appWillEnterForeground` in `application:didFinishLaunchingWithOptions:` and
-`applicationWillEnterForeground:` callbacks respectively.
+Import `AppUpdateTracker.h` in your `AppDelegate` class and register for `AppUpdateTracker` events within the `application:didFinishLaunchingWithOptions:` method:
 
-**Example:**
 ```
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(appFreshInstall:)
-                                                 name:AUTFreshInstallNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(appUpdated:)
-                                                 name:AUTAppUpdatedNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(appUseIncremented:)
-                                                 name:AUTUseCountUpdatedNotification
-                                               object:nil];
-    [AppUpdateTracker sharedInstance];
+    [AppUpdateTracker registerForAppUpdatesWithBlock:^(NSString *oldVersion) {
+        NSLog(@"app updated from: %@", oldVersion);
+    }];
+    [AppUpdateTracker registerForFirstInstallWithBlock:^(NSTimeInterval installTimeSinceEpoch) {
+        NSLog(@"first install detected: %f", installTimeSinceEpoch);
+    }];
+    [AppUpdateTracker registerForIncrementedUseCountWithBlock:^(NSUInteger useCount) {
+        NSLog(@"incremented use count to: %lu", (unsigned long)useCount);
+    }];
     
     //...
 }
@@ -62,6 +54,7 @@ and `appWillEnterForeground` in `application:didFinishLaunchingWithOptions:` and
 
 License
 =======
+MIT License
 
 Copyright (c) 2012, Aaron Jubbal
 All rights reserved.
@@ -86,14 +79,3 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
-
-Development
-===========
-
-Contributing back to the development of this library is appreciated and encouraged.
-
-Contact
-=======
-
-Github username: Stunner
-email: technetix@gmail.com
