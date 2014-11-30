@@ -36,6 +36,8 @@
 #define kAUTNotificationUserInfoOldVersionKey @"AUTNotificationUserInfoOldVersionKey"
 #define kAUTNotificationUserInfoFirstUseTimeKey @"AUTNotificationUserInfoFirstUseTimeKey"
 
+#define APP_UPDATE_TRACKER_DEBUG 1
+
 /**
  Registering for an event with blocks guarentees that the event that occured during that app session
  will be run *once and only once* (even well after initialization of AppUpdateTracker). This is contrary 

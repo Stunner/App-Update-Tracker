@@ -28,9 +28,11 @@
 
 #import "AppUpdateTracker.h"
 
-#define APP_UPDATE_TRACKER_DEBUG 1
-
-#define DISPLAY_AUT_LOG_NAME @"AUT >"
+#if APP_UPDATE_TRACKER_DEBUG
+#define AUTLog(fmt, ...) NSLog((@"[AppUpdateTracker] " fmt), ##__VA_ARGS__)
+#else
+#define AUTLog(...)
+#endif
 
 NSString *const kAUTCurrentVersion = @"kAUTCurrentVersion";
 NSString *const kAUTPreviousVersion = @"kAUTPreviousVersion";
@@ -154,9 +156,8 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
     // increment the use count
     NSUInteger useCount = [userDefaults integerForKey:kAUTUseCount];
     useCount++;
-#if APP_UPDATE_TRACKER_DEBUG
-    NSLog(@"%@ useCount++: %lu", DISPLAY_AUT_LOG_NAME, (unsigned long)useCount);
-#endif
+    AUTLog(@"useCount++: %lu", (unsigned long)useCount);
+    
     [userDefaults setInteger:useCount forKey:kAUTUseCount];
     [userDefaults synchronize];
     
@@ -183,30 +184,23 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
     } else if (longVersion) {
         version = longVersion;
     } else {
-#if APP_UPDATE_TRACKER_DEBUG
-        NSLog(@"App Update Tracker ERROR: No bundle version found. Current version is nil.");
-#endif
+        AUTLog(@"App Update Tracker ERROR: No bundle version found. Current version is nil.");
     }
     
     // get the version number that we've been tracking
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSString *trackingVersion = [userDefaults stringForKey:kAUTCurrentVersion];
     
-#if APP_UPDATE_TRACKER_DEBUG
-    NSLog(@"%@ trackingVersion: %@", DISPLAY_AUT_LOG_NAME, trackingVersion);
-#endif
+    AUTLog(@"trackingVersion: %@", trackingVersion);
     
     if ([trackingVersion isEqualToString:version]) {
         [self incrementUseCount];
         [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
-#if APP_UPDATE_TRACKER_DEBUG
-        NSLog(@"User Upgraded? %d", [userDefaults boolForKey:kAUTUserUpgradedApp]);
-#endif
+        
+        AUTLog(@"User Upgraded? %d", [userDefaults boolForKey:kAUTUserUpgradedApp]);
     } else { // it's an upgraded or new version of the app
         if (trackingVersion) { // we have read the old version - user updated app
-#if APP_UPDATE_TRACKER_DEBUG
-            NSLog(@"%@, app updated from %@", DISPLAY_AUT_LOG_NAME, trackingVersion);
-#endif
+            AUTLog(@"app updated from %@", trackingVersion);
             
             // app updated to current version from version found in <trackingVersion>
             NSDictionary *userInfo = @{kAUTNotificationUserInfoOldVersionKey : trackingVersion};
@@ -218,13 +212,9 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
                 self.appUpdatedBlock(trackingVersion);
             }
             [userDefaults setBool:YES forKey:kAUTUserUpgradedApp];
-#if APP_UPDATE_TRACKER_DEBUG
-            NSLog(@"User Upgraded? %d", [userDefaults boolForKey:kAUTUserUpgradedApp]);
-#endif
+            AUTLog(@"User Upgraded? %d", [userDefaults boolForKey:kAUTUserUpgradedApp]);
         } else { // no old version exists - first time opening after install
-#if APP_UPDATE_TRACKER_DEBUG
-            NSLog(@"%@ fresh install detected", DISPLAY_AUT_LOG_NAME);
-#endif
+            AUTLog(@"fresh install detected");
             NSTimeInterval timeInterval = [userDefaults doubleForKey:kAUTFirstUseTime];
             if (timeInterval == 0) {
                 timeInterval = [[NSDate date] timeIntervalSince1970];
