@@ -29,7 +29,7 @@
 #import "AppUpdateTracker.h"
 
 #if APP_UPDATE_TRACKER_DEBUG
-#define AUTLog(fmt, ...) NSLog((@"[AppUpdateTracker] " fmt), ##__VA_ARGS__)
+#define AUTLog(fmt, ...) NSLog((@"[AppUpdateTracker] %@ " fmt), [NSThread currentThread], ##__VA_ARGS__)
 #else
 #define AUTLog(...)
 #endif
@@ -66,7 +66,7 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
         __block AppUpdateTracker *weakSelf = self;
         [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification
                                                           object:nil
-                                                           queue:[NSOperationQueue mainQueue]
+                                                           queue:[NSOperationQueue currentQueue]
                                                       usingBlock:^(NSNotification *note) {
                                                           [weakSelf incrementUseCount];
                                                       }];
