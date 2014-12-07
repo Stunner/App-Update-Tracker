@@ -94,8 +94,8 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
     return [[NSUserDefaults standardUserDefaults] stringForKey:kAUTPreviousVersion];
 }
 
-+ (double)getFirstUseTime {
-    return [[NSUserDefaults standardUserDefaults] doubleForKey:kAUTFirstUseTime];
++ (NSTimeInterval)getFirstUseTime {
+    return (NSTimeInterval)[[NSUserDefaults standardUserDefaults] doubleForKey:kAUTFirstUseTime];
 }
 
 + (NSUInteger)getUseCount {

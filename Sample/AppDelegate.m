@@ -60,7 +60,11 @@
         [[NSThread currentThread] setName:@"background"];
     }
     
-    // register for AppUpdateTracker events:
+    ///////////////////////////////////////////////////////
+    // register for AUT events through notifications: //
+    ///////////////////////////////////////////////////////
+    
+    // if you want to register for AppUpdateTracker events:
     // IMPORTANT: Must subscribe to notifications *before* initializing the tracker.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(appFreshInstall:)
@@ -76,8 +80,11 @@
                                                object:nil];
     [AppUpdateTracker sharedInstance]; // initialize the tracker
     
-    // Note: Above call to [AppUpdateTracker sharedInstance] is not necessary when registering for blocks
-    // (the call is made internally):
+    ////////////////////////////////////////////////
+    // OR register for AUT events through blocks: //
+    ////////////////////////////////////////////////
+    
+    // Note: Above call to [AppUpdateTracker sharedInstance] is not necessary when registering for blocks (the call is made internally):
     [AppUpdateTracker registerForAppUpdatesWithBlock:^(NSString *oldVersion) {
         NSLog(@"app updated from: %@ on thread: %@", oldVersion, [NSThread currentThread]);
     }];
@@ -91,6 +98,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSLog(@"before AUT init > previous version %@", [AppUpdateTracker getPreviousVersion]);
+    NSLog(@"before AUT init > tracking version %@", [AppUpdateTracker getTrackingVersion]);
+    
     // to test and see how AppUpdateTracker handles various threading scenarios
     BOOL setupAUTOnMainThread = YES;
     if (setupAUTOnMainThread) {
@@ -98,6 +108,9 @@
     } else {
         [self performSelectorInBackground:@selector(setUpAppUpdateTracker) withObject:nil];
     }
+    
+    NSLog(@"after AUT init > previous version %@", [AppUpdateTracker getPreviousVersion]);
+    NSLog(@"after AUT init > tracking version %@", [AppUpdateTracker getTrackingVersion]);
     
     // the usual application:didFinishLaunchingWithOptions: stuff...
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
