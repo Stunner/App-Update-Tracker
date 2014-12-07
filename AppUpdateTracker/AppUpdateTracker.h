@@ -58,6 +58,8 @@
 + (NSString *)getTrackingVersion;
 /**
  Returns the version of the app the user updated from or `nil` if no update has been performed.
+ 
+ Value returned from this method is accurate only *after* AppUpdateTracker has been intialized.
  */
 + (NSString *)getPreviousVersion;
 /**
