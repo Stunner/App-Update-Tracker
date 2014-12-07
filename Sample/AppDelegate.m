@@ -52,7 +52,13 @@
 }
 
 - (void)setUpAppUpdateTracker {
-    [[NSThread currentThread] setName:@"background"]; // for logging purposes only -- so that we can see the background thread labeled as 'background'
+    
+    // for logging purposes only -- so that we can see the main thread labeled as 'main' and background thread labeled as 'background'
+    if ([NSThread currentThread] == [NSThread mainThread]) {
+        [[NSThread currentThread] setName:@"main"];
+    } else {
+        [[NSThread currentThread] setName:@"background"];
+    }
     
     // register for AppUpdateTracker events:
     // IMPORTANT: Must subscribe to notifications *before* initializing the tracker.
@@ -85,44 +91,13 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    /* add '/' to beginning of this line to uncomment line of code below
-    [self performSelectorInBackground:@selector(setUpAppUpdateTracker) withObject:nil];
-     
-    //*/ //* remove first '/' of this line to comment out code below
-    
-    // Comment out the code above or below this line (until the other line)
-    // in any combination to test and see how AppUpdateTracker handles various
-    // threading scenarios/
-    //=============================================================//
-    // register for AppUpdateTracker events:
-    // IMPORTANT: Must subscribe to notifications *before* initializing the tracker.
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(appFreshInstall:)
-                                                 name:AUTFreshInstallNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(appUpdated:)
-                                                 name:AUTAppUpdatedNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(appUseIncremented:)
-                                                 name:AUTUseCountUpdatedNotification
-                                               object:nil];
-    [AppUpdateTracker sharedInstance]; // initialize the tracker
-    
-    // Note: Above call to [AppUpdateTracker sharedInstance] is not necessary when registering for blocks
-    // (the call is made internally):
-    [AppUpdateTracker registerForAppUpdatesWithBlock:^(NSString *oldVersion) {
-        NSLog(@"app updated from: %@ on thread: %@", oldVersion, [NSThread currentThread]);
-    }];
-    [AppUpdateTracker registerForFirstInstallWithBlock:^(NSTimeInterval installTimeSinceEpoch) {
-        NSLog(@"first install detected: %f on thread: %@", installTimeSinceEpoch, [NSThread currentThread]);
-    }];
-    [AppUpdateTracker registerForIncrementedUseCountWithBlock:^(NSUInteger useCount) {
-        NSLog(@"incremented use count to: %lu on thread: %@", (unsigned long)useCount, [NSThread currentThread]);
-    }];
-    
-    //=============================================================//*/
+    // to test and see how AppUpdateTracker handles various threading scenarios
+    BOOL setupAUTOnMainThread = YES;
+    if (setupAUTOnMainThread) {
+        [self setUpAppUpdateTracker];
+    } else {
+        [self performSelectorInBackground:@selector(setUpAppUpdateTracker) withObject:nil];
+    }
     
     // the usual application:didFinishLaunchingWithOptions: stuff...
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
