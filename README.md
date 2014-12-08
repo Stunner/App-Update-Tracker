@@ -1,7 +1,7 @@
 App-Update-Tracker
 ==================
 
-AppUpdateTracker is a simple, very lightweight iOS library intended to detect basic user behavior such as:
+AppUpdateTracker is a simple, lightweight iOS library intended to determine basic app install/update behavior:
 
 - when the user launches the app for the first time
 - when the user opens the app after updating, and **from which version the user updated from**
@@ -9,17 +9,38 @@ AppUpdateTracker is a simple, very lightweight iOS library intended to detect ba
 
 This library posts an alert or executes a block with information on one (and only one) of the 3 aforementioned behaviors per app session (each time the app is run).
 
-How to Add to Your Project
-==========================
+# How to Add to Your Project
 
-Merely add AppUpdateTracker folder to your project.
+### CocoaPods
 
-Usage
-=====
+To install with [CocoaPods](http://cocoapods.org/) include the following in your Podfile:
+
+```ruby
+pod 'App-Update-Tracker', '~> 1.0'
+```
+
+Then install:
+
+```ruby
+$ pod install
+```
+
+Consult the ["Getting Started" guide for more information](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking).
+
+### The Old Fashioned Way
+
+Merely copy the AppUpdateTracker folder (and its contents) to your project.
+
+# Usage
+
 
 Import `AppUpdateTracker.h` in your `AppDelegate` class and register for `AppUpdateTracker` events within the `application:didFinishLaunchingWithOptions:` method:
 
 ```
+#import "AppUpdateTracker.h"
+
+//...
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -41,8 +62,8 @@ Import `AppUpdateTracker.h` in your `AppDelegate` class and register for `AppUpd
 
 Consult the sample project for more info.
 
-License
-=======
+# License
+
 MIT License
 
 Copyright (c) 2012, Aaron Jubbal
