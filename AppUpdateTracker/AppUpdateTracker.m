@@ -103,7 +103,7 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
 }
 
 + (BOOL)getUserUpgradedApp {
-    return [[NSUserDefaults standardUserDefaults] integerForKey:kAUTUserUpgradedApp];
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kAUTUserUpgradedApp];
 }
 
 #pragma mark - Setters
