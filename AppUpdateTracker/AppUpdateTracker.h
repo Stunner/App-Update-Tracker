@@ -47,6 +47,9 @@
  */
 @interface AppUpdateTracker : NSObject
 
+/**
+ Returns singleton instance of AppUpdateTracker.
+ */
 + (id)sharedInstance;
 
 // Getters
@@ -75,6 +78,12 @@
  `applicationWillEnterForeground:`.
  */
 + (NSUInteger)getUseCount;
+/**
+ Returns `YES` if the current session is the first session after updating.
+ 
+ Call this method *after* AppUpdateTracker has been intialized to ensure accurate results.
+ */
++ (BOOL)getUserUpgradedApp;
 
 /**
  Registers block parameter to be called when user opens the app for the first time after installing. Block is 

@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "App-Update-Tracker"
-  s.version      = "1.0.0"
+  s.version      = "1.1.0"
   s.summary      = "AppUpdateTracker is a simple, lightweight iOS library intended to determine basic app install/update behavior."
 
   s.description  =  <<-DESC
@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.author             = { "Stunner" => "ajjubbal@ucdavis.edu" }
   s.social_media_url   = "http://twitter.com/ajubbal"
   s.platform     = :ios
-  s.source       = { :git => "https://github.com/Stunner/App-Update-Tracker.git", :tag => "1.0.0" }
+  s.source       = { :git => "https://github.com/Stunner/App-Update-Tracker.git", :tag => s.version.to_s }
 
   s.source_files  = "AppUpdateTracker"
   s.requires_arc = true
