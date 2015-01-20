@@ -36,13 +36,15 @@
     
     XCTAssert([@"1.0.0" isEqualToVersionString:@"1.0.0"], @"Pass");
     XCTAssert(![@"1.0.0" isEqualToVersionString:@"1.0.01"], @"Pass");
+    XCTAssert([@"1.0" isEqualToVersionString:@"1.0.0"], @"Pass");
     
     XCTAssert([@"1.0" isLessThanVersionString:@"1.9"], @"Pass");
     XCTAssert(![@"1.0" isLessThanVersionString:@"0.9"], @"Pass");
     XCTAssert(![@"1.0" isLessThanVersionString:@"1.0"], @"Pass");
+    XCTAssert(![@"1.8" isLessThanVersionString:@"1.7.10.2"], @"Pass");
     
     XCTAssert(![@"1.0" isLessThanOrEqualToVersionString:@"0.0"], @"Pass");
-    XCTAssert([@"1.0" isLessThanOrEqualToVersionString:@"1.0"], @"Pass");
+    XCTAssert([@"1.0" isLessThanOrEqualToVersionString:@"1.0.0"], @"Pass");
     XCTAssert([@"1.0" isLessThanOrEqualToVersionString:@"2.0"], @"Pass");
 }
 

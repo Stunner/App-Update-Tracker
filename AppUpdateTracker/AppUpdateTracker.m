@@ -46,26 +46,51 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
 
 @implementation NSString (AUTVersionComparison)
 
+/**
+ Removes ".0" suffixes from string.
+ 
+ Used in order to establish accurate equality in version strings (otherwise 1 < 1.0 < 1.0.0).
+ 
+ Reference: http://stackoverflow.com/a/24811200/347339
+ */
+- (NSString *)shortenedVersionNumberString {
+    static NSString *const unnecessaryVersionSuffix = @".0";
+    NSString *shortenedVersionNumber = [self copy];
+    
+    while ([shortenedVersionNumber hasSuffix:unnecessaryVersionSuffix]) {
+        shortenedVersionNumber = [shortenedVersionNumber substringToIndex:shortenedVersionNumber.length - unnecessaryVersionSuffix.length];
+    }
+    
+    return shortenedVersionNumber;
+}
+
 - (BOOL)isGreaterThanVersionString:(NSString *)version {
-    return ([self compare:version options:NSNumericSearch] == NSOrderedDescending);
+    return ([[self shortenedVersionNumberString] compare:[version shortenedVersionNumberString]
+                                                 options:NSNumericSearch] == NSOrderedDescending);
 }
 
 - (BOOL)isGreaterThanOrEqualToVersionString:(NSString *)version {
-    return ([self compare:version options:NSNumericSearch] == NSOrderedDescending ||
-            [self compare:version options:NSNumericSearch] == NSOrderedSame);
+    NSString *shortenedSelf = [self shortenedVersionNumberString];
+    NSString *shortenedVersion = [version shortenedVersionNumberString];
+    return ([shortenedSelf compare:shortenedVersion options:NSNumericSearch] == NSOrderedDescending ||
+            [shortenedSelf compare:shortenedVersion options:NSNumericSearch] == NSOrderedSame);
 }
 
 - (BOOL)isEqualToVersionString:(NSString *)version {
-    return ([self compare:version options:NSNumericSearch] == NSOrderedSame);
+    return ([[self shortenedVersionNumberString] compare:[version shortenedVersionNumberString]
+                                                 options:NSNumericSearch] == NSOrderedSame);
 }
 
 - (BOOL)isLessThanVersionString:(NSString *)version {
-    return ([self compare:version options:NSNumericSearch] == NSOrderedAscending);
+    return ([[self shortenedVersionNumberString] compare:[version shortenedVersionNumberString]
+                                                 options:NSNumericSearch] == NSOrderedAscending);
 }
 
 - (BOOL)isLessThanOrEqualToVersionString:(NSString *)version {
-    return ([self compare:version options:NSNumericSearch] == NSOrderedAscending ||
-            [self compare:version options:NSNumericSearch] == NSOrderedSame);
+    NSString *shortenedSelf = [self shortenedVersionNumberString];
+    NSString *shortenedVersion = [version shortenedVersionNumberString];
+    return ([shortenedSelf compare:shortenedVersion options:NSNumericSearch] == NSOrderedAscending ||
+            [shortenedSelf compare:shortenedVersion options:NSNumericSearch] == NSOrderedSame);
 }
 
 @end
