@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9399DD721A6E4D1400E0C0C1 /* AppUpdateTracker_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9399DD711A6E4D1400E0C0C1 /* AppUpdateTracker_Tests.m */; };
 		93B72ADD1A2496F40007100A /* AppUpdateTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 93B72ADC1A2496F40007100A /* AppUpdateTracker.m */; };
 		93B72AEC1A2496FF0007100A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 93B72AE01A2496FF0007100A /* AppDelegate.m */; };
 		93B72AED1A2496FF0007100A /* AppUpdateTracker-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 93B72AE11A2496FF0007100A /* AppUpdateTracker-Info.plist */; };
@@ -22,7 +23,20 @@
 		93C7D01C1660B7EC00B5588C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 93C7D01B1660B7EC00B5588C /* README.md */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		9399DD731A6E4D1400E0C0C1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 93C7CFDB165F871200B5588C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 93C7CFE3165F871200B5588C;
+			remoteInfo = AppUpdateTracker;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		9399DD6D1A6E4D1400E0C0C1 /* AppUpdateTracker Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AppUpdateTracker Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9399DD701A6E4D1400E0C0C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9399DD711A6E4D1400E0C0C1 /* AppUpdateTracker_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppUpdateTracker_Tests.m; sourceTree = "<group>"; };
 		93B72ADB1A2496F40007100A /* AppUpdateTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppUpdateTracker.h; sourceTree = "<group>"; };
 		93B72ADC1A2496F40007100A /* AppUpdateTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppUpdateTracker.m; sourceTree = "<group>"; };
 		93B72ADF1A2496FF0007100A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -44,6 +58,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		9399DD6A1A6E4D1400E0C0C1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		93C7CFE1165F871200B5588C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -57,6 +78,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9399DD6E1A6E4D1400E0C0C1 /* AppUpdateTracker Tests */ = {
+			isa = PBXGroup;
+			children = (
+				9399DD711A6E4D1400E0C0C1 /* AppUpdateTracker_Tests.m */,
+				9399DD6F1A6E4D1400E0C0C1 /* Supporting Files */,
+			);
+			path = "AppUpdateTracker Tests";
+			sourceTree = "<group>";
+		};
+		9399DD6F1A6E4D1400E0C0C1 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				9399DD701A6E4D1400E0C0C1 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		93B72ADA1A2496F40007100A /* AppUpdateTracker */ = {
 			isa = PBXGroup;
 			children = (
@@ -98,6 +136,7 @@
 				93C7D00E165F9CCB00B5588C /* LICENSE.txt */,
 				93B72ADE1A2496FF0007100A /* Sample */,
 				93B72ADA1A2496F40007100A /* AppUpdateTracker */,
+				9399DD6E1A6E4D1400E0C0C1 /* AppUpdateTracker Tests */,
 				93C7CFE7165F871200B5588C /* Frameworks */,
 				93C7CFE5165F871200B5588C /* Products */,
 			);
@@ -107,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				93C7CFE4165F871200B5588C /* AppUpdateTracker.app */,
+				9399DD6D1A6E4D1400E0C0C1 /* AppUpdateTracker Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -124,6 +164,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		9399DD6C1A6E4D1400E0C0C1 /* AppUpdateTracker Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9399DD771A6E4D1400E0C0C1 /* Build configuration list for PBXNativeTarget "AppUpdateTracker Tests" */;
+			buildPhases = (
+				9399DD691A6E4D1400E0C0C1 /* Sources */,
+				9399DD6A1A6E4D1400E0C0C1 /* Frameworks */,
+				9399DD6B1A6E4D1400E0C0C1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9399DD741A6E4D1400E0C0C1 /* PBXTargetDependency */,
+			);
+			name = "AppUpdateTracker Tests";
+			productName = "AppUpdateTracker Tests";
+			productReference = 9399DD6D1A6E4D1400E0C0C1 /* AppUpdateTracker Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		93C7CFE3165F871200B5588C /* AppUpdateTracker */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 93C7D005165F871200B5588C /* Build configuration list for PBXNativeTarget "AppUpdateTracker" */;
@@ -148,6 +206,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0430;
+				TargetAttributes = {
+					9399DD6C1A6E4D1400E0C0C1 = {
+						CreatedOnToolsVersion = 6.1.1;
+						TestTargetID = 93C7CFE3165F871200B5588C;
+					};
+				};
 			};
 			buildConfigurationList = 93C7CFDE165F871200B5588C /* Build configuration list for PBXProject "AppUpdateTracker" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -162,11 +226,19 @@
 			projectRoot = "";
 			targets = (
 				93C7CFE3165F871200B5588C /* AppUpdateTracker */,
+				9399DD6C1A6E4D1400E0C0C1 /* AppUpdateTracker Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		9399DD6B1A6E4D1400E0C0C1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		93C7CFE2165F871200B5588C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -183,6 +255,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		9399DD691A6E4D1400E0C0C1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9399DD721A6E4D1400E0C0C1 /* AppUpdateTracker_Tests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		93C7CFE0165F871200B5588C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -195,6 +275,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9399DD741A6E4D1400E0C0C1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 93C7CFE3165F871200B5588C /* AppUpdateTracker */;
+			targetProxy = 9399DD731A6E4D1400E0C0C1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		93B72AE31A2496FF0007100A /* InfoPlist.strings */ = {
@@ -224,6 +312,82 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		9399DD751A6E4D1400E0C0C1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "AppUpdateTracker Tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AppUpdateTracker.app/AppUpdateTracker";
+			};
+			name = Debug;
+		};
+		9399DD761A6E4D1400E0C0C1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "AppUpdateTracker Tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AppUpdateTracker.app/AppUpdateTracker";
+			};
+			name = Release;
+		};
 		93C7D003165F871200B5588C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -296,6 +460,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		9399DD771A6E4D1400E0C0C1 /* Build configuration list for PBXNativeTarget "AppUpdateTracker Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9399DD751A6E4D1400E0C0C1 /* Debug */,
+				9399DD761A6E4D1400E0C0C1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		93C7CFDE165F871200B5588C /* Build configuration list for PBXProject "AppUpdateTracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -44,6 +44,32 @@ NSString *const kFirstLaunchTimeKey = @"kFirstLaunchTimeKey";
 NSString *const kUseCountKey = @"kUseCountEventKey";
 NSString *const kOldVersionKey = @"kOldVersionKey";
 
+@implementation NSString (AUTVersionComparison)
+
+- (BOOL)isGreaterThanVersionString:(NSString *)version {
+    return ([self compare:version options:NSNumericSearch] == NSOrderedDescending);
+}
+
+- (BOOL)isGreaterThanOrEqualToVersionString:(NSString *)version {
+    return ([self compare:version options:NSNumericSearch] == NSOrderedDescending ||
+            [self compare:version options:NSNumericSearch] == NSOrderedSame);
+}
+
+- (BOOL)isEqualToVersionString:(NSString *)version {
+    return ([self compare:version options:NSNumericSearch] == NSOrderedSame);
+}
+
+- (BOOL)isLessThanVersionString:(NSString *)version {
+    return ([self compare:version options:NSNumericSearch] == NSOrderedAscending);
+}
+
+- (BOOL)isLessThanOrEqualToVersionString:(NSString *)version {
+    return ([self compare:version options:NSNumericSearch] == NSOrderedAscending ||
+            [self compare:version options:NSNumericSearch] == NSOrderedSame);
+}
+
+@end
+
 @interface AppUpdateTracker ()
 
 @property (nonatomic, copy) void (^firstInstallBlock)(NSTimeInterval installTimeSinceEpoch);

@@ -38,6 +38,20 @@
 
 #define APP_UPDATE_TRACKER_DEBUG 1
 
+@interface NSString (AUTVersionComparison)
+
+- (BOOL)isGreaterThanVersionString:(NSString *)version;
+
+- (BOOL)isGreaterThanOrEqualToVersionString:(NSString *)version;
+
+- (BOOL)isEqualToVersionString:(NSString *)version;
+
+- (BOOL)isLessThanVersionString:(NSString *)version;
+
+- (BOOL)isLessThanOrEqualToVersionString:(NSString *)version;
+
+@end
+
 /**
  Registering for an event with blocks guarentees that the event that occured during that app session
  will be run *once and only once* (even well after initialization of AppUpdateTracker). This is contrary 
