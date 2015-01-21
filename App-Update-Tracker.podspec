@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "App-Update-Tracker"
-  s.version      = "1.1.0"
+  s.version      = "1.2.0"
   s.summary      = "AppUpdateTracker is a simple, lightweight iOS library intended to determine basic app install/update behavior."
 
   s.description  =  <<-DESC
