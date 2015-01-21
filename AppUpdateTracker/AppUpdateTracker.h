@@ -38,16 +38,34 @@
 
 #define APP_UPDATE_TRACKER_DEBUG 1
 
+/**
+ Provides version string comparison methods for convenience sake.
+ */
 @interface NSString (AUTVersionComparison)
 
+/**
+ @returns BOOL indicating if receiver is greater than parameter.
+ */
 - (BOOL)isGreaterThanVersionString:(NSString *)version;
 
+/**
+ @returns BOOL indicating if receiver is greater than or equal to parameter.
+ */
 - (BOOL)isGreaterThanOrEqualToVersionString:(NSString *)version;
 
+/**
+ @returns BOOL indicating if receiver is equal to parameter.
+ */
 - (BOOL)isEqualToVersionString:(NSString *)version;
 
+/**
+ @returns BOOL indicating if receiver is less than parameter.
+ */
 - (BOOL)isLessThanVersionString:(NSString *)version;
 
+/**
+ @returns BOOL indicating if receiver is less than or equal to parameter.
+ */
 - (BOOL)isLessThanOrEqualToVersionString:(NSString *)version;
 
 @end
