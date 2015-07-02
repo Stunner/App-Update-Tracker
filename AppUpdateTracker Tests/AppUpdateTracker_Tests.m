@@ -46,6 +46,9 @@
     XCTAssert(![@"1.0" isLessThanOrEqualToVersionString:@"0.0"], @"Pass");
     XCTAssert([@"1.0" isLessThanOrEqualToVersionString:@"1.0.0"], @"Pass");
     XCTAssert([@"1.0" isLessThanOrEqualToVersionString:@"2.0"], @"Pass");
+    
+    XCTAssert(![@"4.21" isLessThanOrEqualToVersionString:@"4.3"], @"Pass");
+    XCTAssert([@"4.21" isGreaterThanOrEqualToVersionString:@"4.3"], @"Pass");
 }
 
 @end
