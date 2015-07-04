@@ -27,6 +27,7 @@
 
 
 #import "AppUpdateTracker.h"
+#import "AUTKeychainAccess.h"
 
 #if APP_UPDATE_TRACKER_DEBUG
 #define AUTLog(fmt, ...) NSLog((@"[AppUpdateTracker] %@ " fmt), [NSThread currentThread], ##__VA_ARGS__)
@@ -266,6 +267,20 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
             AUTLog(@"User Upgraded? %d", [userDefaults boolForKey:kAUTUserUpgradedApp]);
         } else { // no old version exists - first time opening after install
             AUTLog(@"fresh install detected");
+            
+            AUTKeychainAccess *keychainAccess = [AUTKeychainAccess new];
+            NSData *installationKeyData = [keychainAccess searchKeychainCopyMatching:@"AUTInstallationKey"];
+            if (installationKeyData) {
+                NSString *installationCount = [[NSString alloc] initWithData:installationKeyData
+                                                                    encoding:NSUTF8StringEncoding];
+                NSInteger installationCountInteger = [installationCount integerValue];
+                [keychainAccess updateKeychainValue:[NSString stringWithFormat:@"%lu", (long)++installationCountInteger]
+                                      forIdentifier:@"AUTInstallationKey"];
+                NSLog(@"installation count: %lu", (long)installationCountInteger);
+            } else {
+                [keychainAccess createKeychainValue:@"1" forIdentifier:@"AUTInstallationKey"];
+            }
+            
             NSTimeInterval timeInterval = [userDefaults doubleForKey:kAUTFirstUseTime];
             if (timeInterval == 0) {
                 timeInterval = [[NSDate date] timeIntervalSince1970];

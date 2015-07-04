@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9399DD721A6E4D1400E0C0C1 /* AppUpdateTracker_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9399DD711A6E4D1400E0C0C1 /* AppUpdateTracker_Tests.m */; };
+		93A4F0B51B451EEB009FE82C /* AUTKeychainAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = 93A4F0B41B451EEB009FE82C /* AUTKeychainAccess.m */; };
+		93A4F0B71B45206D009FE82C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93A4F0B61B45206D009FE82C /* Security.framework */; };
 		93B72ADD1A2496F40007100A /* AppUpdateTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 93B72ADC1A2496F40007100A /* AppUpdateTracker.m */; };
 		93B72AEC1A2496FF0007100A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 93B72AE01A2496FF0007100A /* AppDelegate.m */; };
 		93B72AED1A2496FF0007100A /* AppUpdateTracker-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 93B72AE11A2496FF0007100A /* AppUpdateTracker-Info.plist */; };
@@ -37,6 +39,9 @@
 		9399DD6D1A6E4D1400E0C0C1 /* AppUpdateTracker Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AppUpdateTracker Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9399DD701A6E4D1400E0C0C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9399DD711A6E4D1400E0C0C1 /* AppUpdateTracker_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppUpdateTracker_Tests.m; sourceTree = "<group>"; };
+		93A4F0B31B451EEB009FE82C /* AUTKeychainAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AUTKeychainAccess.h; sourceTree = "<group>"; };
+		93A4F0B41B451EEB009FE82C /* AUTKeychainAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AUTKeychainAccess.m; sourceTree = "<group>"; };
+		93A4F0B61B45206D009FE82C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		93B72ADB1A2496F40007100A /* AppUpdateTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppUpdateTracker.h; sourceTree = "<group>"; };
 		93B72ADC1A2496F40007100A /* AppUpdateTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppUpdateTracker.m; sourceTree = "<group>"; };
 		93B72ADF1A2496FF0007100A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -69,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93A4F0B71B45206D009FE82C /* Security.framework in Frameworks */,
 				93C7CFE9165F871200B5588C /* UIKit.framework in Frameworks */,
 				93C7CFEB165F871200B5588C /* Foundation.framework in Frameworks */,
 				93C7CFED165F871200B5588C /* CoreGraphics.framework in Frameworks */,
@@ -100,6 +106,8 @@
 			children = (
 				93B72ADB1A2496F40007100A /* AppUpdateTracker.h */,
 				93B72ADC1A2496F40007100A /* AppUpdateTracker.m */,
+				93A4F0B31B451EEB009FE82C /* AUTKeychainAccess.h */,
+				93A4F0B41B451EEB009FE82C /* AUTKeychainAccess.m */,
 			);
 			path = AppUpdateTracker;
 			sourceTree = "<group>";
@@ -154,6 +162,7 @@
 		93C7CFE7165F871200B5588C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				93A4F0B61B45206D009FE82C /* Security.framework */,
 				93C7CFE8165F871200B5588C /* UIKit.framework */,
 				93C7CFEA165F871200B5588C /* Foundation.framework */,
 				93C7CFEC165F871200B5588C /* CoreGraphics.framework */,
@@ -267,6 +276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93A4F0B51B451EEB009FE82C /* AUTKeychainAccess.m in Sources */,
 				93B72ADD1A2496F40007100A /* AppUpdateTracker.m in Sources */,
 				93B72AF21A2496FF0007100A /* ViewController.m in Sources */,
 				93B72AEC1A2496FF0007100A /* AppDelegate.m in Sources */,
@@ -467,6 +477,7 @@
 				9399DD761A6E4D1400E0C0C1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		93C7CFDE165F871200B5588C /* Build configuration list for PBXProject "AppUpdateTracker" */ = {
 			isa = XCConfigurationList;

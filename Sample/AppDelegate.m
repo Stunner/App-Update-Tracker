@@ -112,6 +112,8 @@
     NSLog(@"after AUT init > previous version %@", [AppUpdateTracker getPreviousVersion]);
     NSLog(@"after AUT init > tracking version %@", [AppUpdateTracker getTrackingVersion]);
     
+    NSLog(@"BUNDLE ID: %@", [[NSBundle mainBundle] bundleIdentifier]);
+    
     // the usual application:didFinishLaunchingWithOptions: stuff...
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         self.viewController = [[ViewController alloc] initWithNibName:@"ViewController_iPhone" bundle:nil];
