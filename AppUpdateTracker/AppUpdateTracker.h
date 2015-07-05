@@ -35,6 +35,7 @@
 #define kAUTNotificationUserInfoUseCountKey @"AUTNotificationUserInfoUseCountKey"
 #define kAUTNotificationUserInfoOldVersionKey @"AUTNotificationUserInfoOldVersionKey"
 #define kAUTNotificationUserInfoFirstUseTimeKey @"AUTNotificationUserInfoFirstUseTimeKey"
+#define kAUTNotificationUserInfoInstallCount @"AUTNotificationUserInfoInstallCount"
 
 #define APP_UPDATE_TRACKER_DEBUG 1
 
@@ -121,7 +122,7 @@
  Registers block parameter to be called when user opens the app for the first time after installing. Block is 
  called once registered, even if this function is called later during the app session.
  */
-+ (void)registerForFirstInstallWithBlock:(void (^)(NSTimeInterval installTimeSinceEpoch))block;
++ (void)registerForFirstInstallWithBlock:(void (^)(NSTimeInterval installTimeSinceEpoch, NSUInteger installCount))block;
 /**
  Registers block parameter to be called when user opens the app and it is not a first time install nor an 
  update event. Block is called once registered, even if this function is called later during the app session.

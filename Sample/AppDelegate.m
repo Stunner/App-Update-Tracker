@@ -88,8 +88,8 @@
     [AppUpdateTracker registerForAppUpdatesWithBlock:^(NSString *oldVersion) {
         NSLog(@"app updated from: %@ on thread: %@", oldVersion, [NSThread currentThread]);
     }];
-    [AppUpdateTracker registerForFirstInstallWithBlock:^(NSTimeInterval installTimeSinceEpoch) {
-        NSLog(@"first install detected: %f on thread: %@", installTimeSinceEpoch, [NSThread currentThread]);
+    [AppUpdateTracker registerForFirstInstallWithBlock:^(NSTimeInterval installTimeSinceEpoch, NSUInteger installCount) {
+        NSLog(@"installed %lu times (inclusive), installed at: %f on thread: %@", (unsigned long)installCount, installTimeSinceEpoch, [NSThread currentThread]);
     }];
     [AppUpdateTracker registerForIncrementedUseCountWithBlock:^(NSUInteger useCount) {
         NSLog(@"incremented use count to: %lu on thread: %@", (unsigned long)useCount, [NSThread currentThread]);
@@ -111,8 +111,6 @@
     
     NSLog(@"after AUT init > previous version %@", [AppUpdateTracker getPreviousVersion]);
     NSLog(@"after AUT init > tracking version %@", [AppUpdateTracker getTrackingVersion]);
-    
-    NSLog(@"BUNDLE ID: %@", [[NSBundle mainBundle] bundleIdentifier]);
     
     // the usual application:didFinishLaunchingWithOptions: stuff...
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {

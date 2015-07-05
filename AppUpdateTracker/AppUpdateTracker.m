@@ -40,8 +40,10 @@ NSString *const kAUTPreviousVersion = @"kAUTPreviousVersion";
 NSString *const kAUTFirstUseTime = @"kAUTFirstUseTime";
 NSString *const kAUTUseCount = @"kAUTUseCount";
 NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
+NSString *const kAUTInstallationCount = @"kAUTInstallationCount";
 
 NSString *const kFirstLaunchTimeKey = @"kFirstLaunchTimeKey";
+NSString *const kInstallCountKey = @"kInstallCountKey";
 NSString *const kUseCountKey = @"kUseCountEventKey";
 NSString *const kOldVersionKey = @"kOldVersionKey";
 
@@ -98,7 +100,7 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
 
 @interface AppUpdateTracker ()
 
-@property (nonatomic, copy) void (^firstInstallBlock)(NSTimeInterval installTimeSinceEpoch);
+@property (nonatomic, copy) void (^firstInstallBlock)(NSTimeInterval installTimeSinceEpoch, NSUInteger installCount);
 @property (nonatomic, copy) void (^useCountBlock)(NSUInteger useCount);
 @property (nonatomic, copy) void (^appUpdatedBlock)(NSString *oldVersion);
 
@@ -160,16 +162,18 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
 
 #pragma mark - Setters
 
-- (void)setFirstInstallBlock:(void (^)(NSTimeInterval))firstInstallBlock {
+- (void)setFirstInstallBlock:(void (^)(NSTimeInterval installTimeSinceEpoch, NSUInteger installCount))firstInstallBlock {
     _firstInstallBlock = firstInstallBlock;
     NSNumber *firstLaunchTime = [self.postedEventsDictionary objectForKey:kFirstLaunchTimeKey];
-    if (firstLaunchTime) {
-        firstInstallBlock([firstLaunchTime doubleValue]);
+    NSNumber *installCount = [self.postedEventsDictionary objectForKey:kInstallCountKey];
+    if (firstLaunchTime && installCount) {
+        firstInstallBlock([firstLaunchTime doubleValue], [installCount integerValue]);
         [self.postedEventsDictionary removeObjectForKey:kFirstLaunchTimeKey];
+        [self.postedEventsDictionary removeObjectForKey:kInstallCountKey];
     }
 }
 
-- (void)setUseCountBlock:(void (^)(NSUInteger))useCountBlock {
+- (void)setUseCountBlock:(void (^)(NSUInteger useCount))useCountBlock {
     _useCountBlock = useCountBlock;
     NSNumber *useCount = [self.postedEventsDictionary objectForKey:kUseCountKey];
     if (useCount) {
@@ -178,7 +182,7 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
     }
 }
 
-- (void)setAppUpdatedBlock:(void (^)(NSString *))appUpdatedBlock {
+- (void)setAppUpdatedBlock:(void (^)(NSString *oldVersion))appUpdatedBlock {
     _appUpdatedBlock = appUpdatedBlock;
     NSString *oldVersion = [self.postedEventsDictionary objectForKey:kOldVersionKey];
     if (oldVersion) {
@@ -189,7 +193,7 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
 
 #pragma mark - Public
 
-+ (void)registerForFirstInstallWithBlock:(void (^)(NSTimeInterval installTimeSinceEpoch))block {
++ (void)registerForFirstInstallWithBlock:(void (^)(NSTimeInterval installTimeSinceEpoch, NSUInteger installCount))block {
     [[AppUpdateTracker sharedInstance] setFirstInstallBlock:block];
 }
 
@@ -269,17 +273,18 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
             AUTLog(@"fresh install detected");
             
             AUTKeychainAccess *keychainAccess = [AUTKeychainAccess new];
-            NSData *installationKeyData = [keychainAccess searchKeychainCopyMatching:@"AUTInstallationKey"];
+            NSData *installationKeyData = [keychainAccess searchKeychainCopyMatching:kAUTInstallationCount];
+            NSInteger installationCountInteger = 1;
             if (installationKeyData) {
                 NSString *installationCount = [[NSString alloc] initWithData:installationKeyData
                                                                     encoding:NSUTF8StringEncoding];
-                NSInteger installationCountInteger = [installationCount integerValue];
+                installationCountInteger = [installationCount integerValue];
                 [keychainAccess updateKeychainValue:[NSString stringWithFormat:@"%lu", (long)++installationCountInteger]
                                       forIdentifier:@"AUTInstallationKey"];
-                NSLog(@"installation count: %lu", (long)installationCountInteger);
             } else {
-                [keychainAccess createKeychainValue:@"1" forIdentifier:@"AUTInstallationKey"];
+                [keychainAccess createKeychainValue:@"1" forIdentifier:kAUTInstallationCount];
             }
+            AUTLog(@"installation count: %lu", (long)installationCountInteger);
             
             NSTimeInterval timeInterval = [userDefaults doubleForKey:kAUTFirstUseTime];
             if (timeInterval == 0) {
@@ -288,14 +293,16 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
             }
             
             // fresh install of the app
-            NSNumber *timeIntervalNumber = @(timeInterval);
-            NSDictionary *userInfo = @{kAUTNotificationUserInfoFirstUseTimeKey : timeIntervalNumber};
+//            NSNumber *timeIntervalNumber = @(timeInterval);
+            NSDictionary *userInfo = @{kAUTNotificationUserInfoFirstUseTimeKey : @(timeInterval),
+                                       kAUTNotificationUserInfoInstallCount : @(installationCountInteger)};
             [[NSNotificationCenter defaultCenter] postNotificationName:AUTFreshInstallNotification
                                                                 object:self
                                                               userInfo:userInfo];
-            [self.postedEventsDictionary setObject:timeIntervalNumber forKey:kFirstLaunchTimeKey];
+            [self.postedEventsDictionary setObject:@(timeInterval) forKey:kFirstLaunchTimeKey];
+            [self.postedEventsDictionary setObject:@(installationCountInteger) forKey:kInstallCountKey];
             if (self.firstInstallBlock) {
-                self.firstInstallBlock(timeInterval);
+                self.firstInstallBlock(timeInterval, installationCountInteger);
             }
             [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
             
