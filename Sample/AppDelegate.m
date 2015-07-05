@@ -40,18 +40,18 @@
 @synthesize viewController = _viewController;
 
 - (void)appFreshInstall:(NSNotification *)notification {
-    NSLog(@"App Fresh Install Notification Received! Install count: %@ install time: %@ from thread: %@",
+    NSLog(@"notification-- App Fresh Install Notification Received! Install count: %@\ninstall time: %@\nfrom thread: %@",
           [[notification userInfo] objectForKey:kAUTNotificationUserInfoInstallCount],
           [[notification userInfo] objectForKey:kAUTNotificationUserInfoFirstUseTimeKey], [NSThread currentThread]);
 }
 
 - (void)appUpdated:(NSNotification *)notification {
-    NSLog(@"App Updated Notification Received! %@ from thread: %@",
+    NSLog(@"notification-- App Updated Notification Received! %@\nfrom thread: %@",
           [[notification userInfo] objectForKey:kAUTNotificationUserInfoOldVersionKey], [NSThread currentThread]);
 }
 
 - (void)appUseIncremented:(NSNotification *)notification {
-    NSLog(@"App Use Incremented Notification Received! %@ from thread: %@",
+    NSLog(@"notification-- App Use Incremented Notification Received! %@\nfrom thread: %@",
           [[notification userInfo] objectForKey:kAUTNotificationUserInfoUseCountKey], [NSThread currentThread]);
 }
 
@@ -90,13 +90,13 @@
     
     // Note: Above call to [AppUpdateTracker sharedInstance] is not necessary when registering for blocks (the call is made internally):
     [AppUpdateTracker registerForAppUpdatesWithBlock:^(NSString *oldVersion) {
-        NSLog(@"app updated from: %@ on thread: %@", oldVersion, [NSThread currentThread]);
+        NSLog(@"block-- app updated from: %@\non thread: %@", oldVersion, [NSThread currentThread]);
     }];
     [AppUpdateTracker registerForFirstInstallWithBlock:^(NSTimeInterval installTimeSinceEpoch, NSUInteger installCount) {
-        NSLog(@"installed %lu times (inclusive), installed at: %f on thread: %@", (unsigned long)installCount, installTimeSinceEpoch, [NSThread currentThread]);
+        NSLog(@"block-- installed %lu times (inclusive)\ninstalled at: %f\non thread: %@", (unsigned long)installCount, installTimeSinceEpoch, [NSThread currentThread]);
     }];
     [AppUpdateTracker registerForIncrementedUseCountWithBlock:^(NSUInteger useCount) {
-        NSLog(@"incremented use count to: %lu on thread: %@", (unsigned long)useCount, [NSThread currentThread]);
+        NSLog(@"block-- incremented use count to: %lu\non thread: %@", (unsigned long)useCount, [NSThread currentThread]);
     }];
 }
 

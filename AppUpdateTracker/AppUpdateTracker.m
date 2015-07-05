@@ -234,7 +234,7 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
                                                         object:self
                                                       userInfo:userInfo];
     [self.postedEventsDictionary setObject:useCountNumber forKey:kUseCountKey];
-    if (self.useCountBlock) {
+    if (self.useCountBlock) { // TODO: check if these style of blocks are ever called... I'm thinking these may never be used
         self.useCountBlock(useCount);
     }
 }
@@ -271,7 +271,6 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
             [keychainAccess createKeychainValue:@"1" forIdentifier:kAUTInstallationCount];
         }
         
-        AUTLog(@"User Upgraded? %d", [userDefaults boolForKey:kAUTUserUpgradedApp]);
     } else { // it's an upgraded or new version of the app
         if (trackingVersion) { // we have read the old version - user updated app
             AUTLog(@"app updated from %@", trackingVersion);
@@ -294,7 +293,7 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
                 self.appUpdatedBlock(trackingVersion);
             }
             [userDefaults setBool:YES forKey:kAUTUserUpgradedApp];
-            AUTLog(@"User Upgraded? %d", [userDefaults boolForKey:kAUTUserUpgradedApp]);
+            
         } else { // no old version exists - first time opening after install
             AUTLog(@"fresh install detected");
             
@@ -319,7 +318,6 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
             }
             
             // fresh install of the app
-//            NSNumber *timeIntervalNumber = @(timeInterval);
             NSDictionary *userInfo = @{kAUTNotificationUserInfoFirstUseTimeKey : @(timeInterval),
                                        kAUTNotificationUserInfoInstallCount : @(installationCountInteger)};
             [[NSNotificationCenter defaultCenter] postNotificationName:AUTFreshInstallNotification
@@ -331,7 +329,6 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
                 self.firstInstallBlock(timeInterval, installationCountInteger);
             }
             [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
-            
         }
         // include what version user updated from, nil if user didn't update
         // (only for initial session)
@@ -340,8 +337,8 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
         [userDefaults setDouble:[[NSDate date] timeIntervalSince1970]
                          forKey:kAUTFirstUseTime];
         [userDefaults setInteger:1 forKey:kAUTUseCount];
-    }
-    
+        
+    } // it's an upgraded or new version of the app
     [userDefaults synchronize];
 }
 
