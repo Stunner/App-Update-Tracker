@@ -77,6 +77,9 @@
  to the behavior of AUT notifications, that are posted once upon AUT initialization.
  
  One of the three events is guarenteed to be called *once* during an app session.
+ 
+ Get methods are only ensured to return accurate results *after* AppUpdateTracker has been intialized 
+ (with either `+ sharedInstance` or `+ registerFor...`).
  */
 @interface AppUpdateTracker : NSObject
 
@@ -92,18 +95,28 @@
  This will always return the current version of the app *after* AppUpdateTracker has been intialized.
  */
 + (NSString *)getTrackingVersion;
+
 /**
  Returns the version of the app the user updated from or `nil` if no update has been performed.
  
  Value returned from this method is accurate only *after* AppUpdateTracker has been intialized.
  */
 + (NSString *)getPreviousVersion;
+
 /**
  Returns time at which user first opened the app after install represented as time since epoch.
  
  This function uses NSDate's `timeIntervalSince1970`.
  */
 + (NSTimeInterval)getFirstUseTime;
+
+/**
+ Returns the number of times the app has been installed on the current device.
+ 
+ This information is determined by storing a count value in the app's keychain.
+ */
++ (NSUInteger)getInstallCount;
+
 /**
  Returns number of times the current version of the app has been opened.
  
@@ -111,10 +124,9 @@
  `applicationWillEnterForeground:`.
  */
 + (NSUInteger)getUseCount;
+
 /**
  Returns `YES` if the current session is the first session after updating.
- 
- Call this method *after* AppUpdateTracker has been intialized to ensure accurate results.
  */
 + (BOOL)getUserUpgradedApp;
 
@@ -123,11 +135,13 @@
  called once registered, even if this function is called later during the app session.
  */
 + (void)registerForFirstInstallWithBlock:(void (^)(NSTimeInterval installTimeSinceEpoch, NSUInteger installCount))block;
+
 /**
  Registers block parameter to be called when user opens the app and it is not a first time install nor an 
  update event. Block is called once registered, even if this function is called later during the app session.
  */
 + (void)registerForIncrementedUseCountWithBlock:(void (^)(NSUInteger useCount))block;
+
 /**
  Registers block parameter to be called when user opens the app for the first time after updating. Block is 
  called once registered, even if this function is called later during the app session.

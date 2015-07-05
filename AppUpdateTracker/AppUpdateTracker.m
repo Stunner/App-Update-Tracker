@@ -152,6 +152,17 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
     return (NSTimeInterval)[[NSUserDefaults standardUserDefaults] doubleForKey:kAUTFirstUseTime];
 }
 
++ (NSUInteger)getInstallCount {
+    AUTKeychainAccess *keychainAccess = [AUTKeychainAccess new];
+    NSData *installationKeyData = [keychainAccess searchKeychainCopyMatching:kAUTInstallationCount];
+    if (installationKeyData) {
+        NSString *installationCount = [[NSString alloc] initWithData:installationKeyData
+                                                            encoding:NSUTF8StringEncoding];
+        return [installationCount integerValue];
+    }
+    return 0; // invalid value
+}
+
 + (NSUInteger)getUseCount {
     return [[NSUserDefaults standardUserDefaults] integerForKey:kAUTUseCount];
 }
@@ -253,6 +264,13 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
         [self incrementUseCount];
         [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
         
+        // ensure install count entry is created in keychain for legacy users
+        AUTKeychainAccess *keychainAccess = [AUTKeychainAccess new];
+        NSData *installationKeyData = [keychainAccess searchKeychainCopyMatching:kAUTInstallationCount];
+        if (!installationKeyData) {
+            [keychainAccess createKeychainValue:@"1" forIdentifier:kAUTInstallationCount];
+        }
+        
         AUTLog(@"User Upgraded? %d", [userDefaults boolForKey:kAUTUserUpgradedApp]);
     } else { // it's an upgraded or new version of the app
         if (trackingVersion) { // we have read the old version - user updated app
@@ -263,6 +281,14 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
             [[NSNotificationCenter defaultCenter] postNotificationName:AUTAppUpdatedNotification
                                                                 object:self
                                                               userInfo:userInfo];
+            
+            // ensure install count entry is created in keychain for legacy users
+            AUTKeychainAccess *keychainAccess = [AUTKeychainAccess new];
+            NSData *installationKeyData = [keychainAccess searchKeychainCopyMatching:kAUTInstallationCount];
+            if (!installationKeyData) {
+                [keychainAccess createKeychainValue:@"1" forIdentifier:kAUTInstallationCount];
+            }
+            
             [self.postedEventsDictionary setObject:trackingVersion forKey:kOldVersionKey];
             if (self.appUpdatedBlock) {
                 self.appUpdatedBlock(trackingVersion);
@@ -280,7 +306,7 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
                                                                     encoding:NSUTF8StringEncoding];
                 installationCountInteger = [installationCount integerValue];
                 [keychainAccess updateKeychainValue:[NSString stringWithFormat:@"%lu", (long)++installationCountInteger]
-                                      forIdentifier:@"AUTInstallationKey"];
+                                      forIdentifier:kAUTInstallationCount];
             } else {
                 [keychainAccess createKeychainValue:@"1" forIdentifier:kAUTInstallationCount];
             }

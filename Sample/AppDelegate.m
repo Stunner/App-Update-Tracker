@@ -40,15 +40,19 @@
 @synthesize viewController = _viewController;
 
 - (void)appFreshInstall:(NSNotification *)notification {
-    NSLog(@"App Fresh Install Notification Received! %@ from thread: %@", [[notification userInfo] objectForKey:kAUTNotificationUserInfoFirstUseTimeKey], [NSThread currentThread]);
+    NSLog(@"App Fresh Install Notification Received! Install count: %@ install time: %@ from thread: %@",
+          [[notification userInfo] objectForKey:kAUTNotificationUserInfoInstallCount],
+          [[notification userInfo] objectForKey:kAUTNotificationUserInfoFirstUseTimeKey], [NSThread currentThread]);
 }
 
 - (void)appUpdated:(NSNotification *)notification {
-    NSLog(@"App Updated Notification Received! %@ from thread: %@", [[notification userInfo] objectForKey:kAUTNotificationUserInfoOldVersionKey], [NSThread currentThread]);
+    NSLog(@"App Updated Notification Received! %@ from thread: %@",
+          [[notification userInfo] objectForKey:kAUTNotificationUserInfoOldVersionKey], [NSThread currentThread]);
 }
 
 - (void)appUseIncremented:(NSNotification *)notification {
-    NSLog(@"App Use Incremented Notification Received! %@ from thread: %@", [[notification userInfo] objectForKey:kAUTNotificationUserInfoUseCountKey], [NSThread currentThread]);
+    NSLog(@"App Use Incremented Notification Received! %@ from thread: %@",
+          [[notification userInfo] objectForKey:kAUTNotificationUserInfoUseCountKey], [NSThread currentThread]);
 }
 
 - (void)setUpAppUpdateTracker {
@@ -65,7 +69,7 @@
     ///////////////////////////////////////////////////////
     
     // if you want to register for AppUpdateTracker events:
-    // IMPORTANT: Must subscribe to notifications *before* initializing the tracker.
+    // IMPORTANT: Must subscribe to notifications *before* initializing the tracker, like so:
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(appFreshInstall:)
                                                  name:AUTFreshInstallNotification
