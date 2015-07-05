@@ -89,6 +89,21 @@
 + (id)sharedInstance;
 
 // Getters
+
+/**
+ Returns the current version of the app as found in the `CFBundleShortVersionString` key of the main bundle's `infoDictionary`.
+ 
+ Placed here for convenience's sake.
+ */
++ (NSString *)getShortVersionString;
+
+/**
+ Returns the current version of the app as found in the `kCFBundleVersionKey` key of the main bundle's `infoDictionary`.
+ 
+ Placed here for convenience's sake.
+ */
++ (NSString *)getLongVersionString;
+
 /**
  Returns the most recent version of the app that has last been seen by AppUpdateTracker.
  

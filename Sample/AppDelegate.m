@@ -102,6 +102,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSLog(@"short version string: %@", [AppUpdateTracker getShortVersionString]);
+    NSLog(@"long version string: %@", [AppUpdateTracker getLongVersionString]);
+    
     NSLog(@"before AUT init > previous version %@", [AppUpdateTracker getPreviousVersion]);
     NSLog(@"before AUT init > tracking version %@", [AppUpdateTracker getTrackingVersion]);
     

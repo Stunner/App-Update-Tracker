@@ -140,6 +140,14 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
 
 #pragma mark - Getters
 
++ (NSString *)getShortVersionString {
+    return [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+}
+
++ (NSString *)getLongVersionString {
+    return [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+}
+
 + (NSString *)getTrackingVersion {
     return [[NSUserDefaults standardUserDefaults] stringForKey:kAUTCurrentVersion];
 }
@@ -242,16 +250,17 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
 - (void)appDidFinishLaunching {
     
     // get the app's version
-    NSString *shortVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]; //has priority
-    NSString *longVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+    NSString *shortVersion = [AppUpdateTracker getShortVersionString]; //has priority
+    NSString *longVersion = [AppUpdateTracker getLongVersionString];
     
-    NSString *version;
+    NSString *version = nil;
     if (shortVersion) {
         version = shortVersion;
     } else if (longVersion) {
         version = longVersion;
     } else {
         AUTLog(@"App Update Tracker ERROR: No bundle version found. Current version is nil.");
+        return;
     }
     
     // get the version number that we've been tracking
