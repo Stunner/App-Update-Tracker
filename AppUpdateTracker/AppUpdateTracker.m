@@ -176,7 +176,7 @@ NSString *const kCurrentVersionKey = @"kCurrentVersionKey";
     return [[NSUserDefaults standardUserDefaults] integerForKey:kAUTUseCount];
 }
 
-+ (BOOL)getUserUpgradedApp {
++ (BOOL)getUserUpdatedApp {
     return [[NSUserDefaults standardUserDefaults] boolForKey:kAUTUserUpgradedApp];
 }
 
