@@ -232,18 +232,17 @@ NSString *const kCurrentVersionKey = @"kCurrentVersionKey";
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     // increment the use count
     NSUInteger useCount = [userDefaults integerForKey:kAUTUseCount];
-    useCount++;
+    
+    [userDefaults setInteger:++useCount forKey:kAUTUseCount];
+    [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
+    
     AUTLog(@"useCount++: %lu", (unsigned long)useCount);
     
-    [userDefaults setInteger:useCount forKey:kAUTUseCount];
-    [userDefaults synchronize];
-    
-    NSNumber *useCountNumber = @(useCount);
-    NSDictionary *userInfo = @{kAUTNotificationUserInfoUseCountKey : useCountNumber};
+    NSDictionary *userInfo = @{kAUTNotificationUserInfoUseCountKey : @(useCount)};
     [[NSNotificationCenter defaultCenter] postNotificationName:AUTUseCountUpdatedNotification
                                                         object:self
                                                       userInfo:userInfo];
-    [self.postedEventsDictionary setObject:useCountNumber forKey:kUseCountKey];
+    [self.postedEventsDictionary setObject:@(useCount) forKey:kUseCountKey];
     if (self.useCountBlock) { // TODO: check if these style of blocks are ever called... I'm thinking these may never be used
         self.useCountBlock(useCount);
     }
@@ -280,7 +279,6 @@ NSString *const kCurrentVersionKey = @"kCurrentVersionKey";
         }
         
         [self incrementUseCount];
-        [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
         
     } else { // it's an upgraded or new version of the app
         if (trackingVersion) { // we have read the old version - user updated app
