@@ -44,8 +44,9 @@ NSString *const kAUTInstallationCount = @"kAUTInstallationCount";
 
 NSString *const kFirstLaunchTimeKey = @"kFirstLaunchTimeKey";
 NSString *const kInstallCountKey = @"kInstallCountKey";
-NSString *const kUseCountKey = @"kUseCountEventKey";
-NSString *const kOldVersionKey = @"kOldVersionKey";
+NSString *const kUseCountKey = @"kUseCountKey";
+NSString *const kPreviousVersionKey = @"kPreviousVersionKey";
+NSString *const kCurrentVersionKey = @"kCurrentVersionKey";
 
 @implementation NSString (AUTVersionComparison)
 
@@ -102,7 +103,7 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
 
 @property (nonatomic, copy) void (^firstInstallBlock)(NSTimeInterval installTimeSinceEpoch, NSUInteger installCount);
 @property (nonatomic, copy) void (^useCountBlock)(NSUInteger useCount);
-@property (nonatomic, copy) void (^appUpdatedBlock)(NSString *oldVersion);
+@property (nonatomic, copy) void (^appUpdatedBlock)(NSString *previousVersion, NSString *currentVersion);
 
 @property (nonatomic, strong) NSMutableDictionary *postedEventsDictionary;
 
@@ -201,12 +202,13 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
     }
 }
 
-- (void)setAppUpdatedBlock:(void (^)(NSString *oldVersion))appUpdatedBlock {
+- (void)setAppUpdatedBlock:(void (^)(NSString *previousVersion, NSString *currentVersion))appUpdatedBlock {
     _appUpdatedBlock = appUpdatedBlock;
-    NSString *oldVersion = [self.postedEventsDictionary objectForKey:kOldVersionKey];
-    if (oldVersion) {
-        appUpdatedBlock(oldVersion);
-        [self.postedEventsDictionary removeObjectForKey:kOldVersionKey];
+    NSString *previousVersion = [self.postedEventsDictionary objectForKey:kPreviousVersionKey];
+    NSString *currentVersion = [self.postedEventsDictionary objectForKey:kCurrentVersionKey];
+    if (previousVersion) {
+        appUpdatedBlock(previousVersion, currentVersion);
+        [self.postedEventsDictionary removeObjectForKey:kPreviousVersionKey];
     }
 }
 
@@ -220,7 +222,7 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
     [[AppUpdateTracker sharedInstance] setUseCountBlock:block];
 }
 
-+ (void)registerForAppUpdatesWithBlock:(void (^)(NSString *oldVersion))block {
++ (void)registerForAppUpdatesWithBlock:(void (^)(NSString *previousVersion, NSString *currentVersion))block {
     [[AppUpdateTracker sharedInstance] setAppUpdatedBlock:block];
 }
 
@@ -270,9 +272,6 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
     AUTLog(@"trackingVersion: %@", trackingVersion);
     
     if ([trackingVersion isEqualToString:version]) {
-        [self incrementUseCount];
-        [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
-        
         // ensure install count entry is created in keychain for legacy users
         AUTKeychainAccess *keychainAccess = [AUTKeychainAccess new];
         NSData *installationKeyData = [keychainAccess searchKeychainCopyMatching:kAUTInstallationCount];
@@ -280,15 +279,12 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
             [keychainAccess createKeychainValue:@"1" forIdentifier:kAUTInstallationCount];
         }
         
+        [self incrementUseCount];
+        [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
+        
     } else { // it's an upgraded or new version of the app
         if (trackingVersion) { // we have read the old version - user updated app
             AUTLog(@"app updated from %@", trackingVersion);
-            
-            // app updated to current version from version found in <trackingVersion>
-            NSDictionary *userInfo = @{kAUTNotificationUserInfoOldVersionKey : trackingVersion};
-            [[NSNotificationCenter defaultCenter] postNotificationName:AUTAppUpdatedNotification
-                                                                object:self
-                                                              userInfo:userInfo];
             
             // ensure install count entry is created in keychain for legacy users
             AUTKeychainAccess *keychainAccess = [AUTKeychainAccess new];
@@ -297,15 +293,24 @@ NSString *const kOldVersionKey = @"kOldVersionKey";
                 [keychainAccess createKeychainValue:@"1" forIdentifier:kAUTInstallationCount];
             }
             
-            [self.postedEventsDictionary setObject:trackingVersion forKey:kOldVersionKey];
+            // app updated to current version from version found in <trackingVersion>
+            NSDictionary *userInfo = @{kAUTNotificationUserInfoPreviousVersionKey : trackingVersion,
+                                       kAUTNotificationUserInfoCurrentVersionKey : version};
+            [[NSNotificationCenter defaultCenter] postNotificationName:AUTAppUpdatedNotification
+                                                                object:self
+                                                              userInfo:userInfo];
+            
+            [self.postedEventsDictionary setObject:trackingVersion forKey:kPreviousVersionKey];
+            [self.postedEventsDictionary setObject:version forKey:kCurrentVersionKey];
             if (self.appUpdatedBlock) {
-                self.appUpdatedBlock(trackingVersion);
+                self.appUpdatedBlock(trackingVersion, version);
             }
             [userDefaults setBool:YES forKey:kAUTUserUpgradedApp];
             
         } else { // no old version exists - first time opening after install
             AUTLog(@"fresh install detected");
             
+            // track install count in keychain
             AUTKeychainAccess *keychainAccess = [AUTKeychainAccess new];
             NSData *installationKeyData = [keychainAccess searchKeychainCopyMatching:kAUTInstallationCount];
             NSInteger installationCountInteger = 1;

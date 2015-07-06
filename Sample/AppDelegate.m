@@ -46,8 +46,9 @@
 }
 
 - (void)appUpdated:(NSNotification *)notification {
-    NSLog(@"notification-- App Updated Notification Received! %@\nfrom thread: %@",
-          [[notification userInfo] objectForKey:kAUTNotificationUserInfoOldVersionKey], [NSThread currentThread]);
+    NSLog(@"notification-- App Updated Notification Received! Updated from: %@\nto: %@\nfrom thread: %@",
+          [[notification userInfo] objectForKey:kAUTNotificationUserInfoPreviousVersionKey],
+          [[notification userInfo] objectForKey:kAUTNotificationUserInfoCurrentVersionKey], [NSThread currentThread]);
 }
 
 - (void)appUseIncremented:(NSNotification *)notification {
@@ -89,8 +90,8 @@
     ////////////////////////////////////////////////
     
     // Note: Above call to [AppUpdateTracker sharedInstance] is not necessary when registering for blocks (the call is made internally):
-    [AppUpdateTracker registerForAppUpdatesWithBlock:^(NSString *oldVersion) {
-        NSLog(@"block-- app updated from: %@\non thread: %@", oldVersion, [NSThread currentThread]);
+    [AppUpdateTracker registerForAppUpdatesWithBlock:^(NSString *previousVersion, NSString *currentVersion) {
+        NSLog(@"block-- app updated from: %@\nto: %@\non thread: %@", previousVersion, currentVersion, [NSThread currentThread]);
     }];
     [AppUpdateTracker registerForFirstInstallWithBlock:^(NSTimeInterval installTimeSinceEpoch, NSUInteger installCount) {
         NSLog(@"block-- installed %lu times (inclusive)\ninstalled at: %f\non thread: %@", (unsigned long)installCount, installTimeSinceEpoch, [NSThread currentThread]);

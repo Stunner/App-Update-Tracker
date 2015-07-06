@@ -33,7 +33,8 @@
 #define AUTFreshInstallNotification @"AUTFreshInstallNotification"
 
 #define kAUTNotificationUserInfoUseCountKey @"AUTNotificationUserInfoUseCountKey"
-#define kAUTNotificationUserInfoOldVersionKey @"AUTNotificationUserInfoOldVersionKey"
+#define kAUTNotificationUserInfoPreviousVersionKey @"AUTNotificationUserInfoPreviousVersionKey"
+#define kAUTNotificationUserInfoCurrentVersionKey @"AUTNotificationUserInfoCurrentVersionKey"
 #define kAUTNotificationUserInfoFirstUseTimeKey @"AUTNotificationUserInfoFirstUseTimeKey"
 #define kAUTNotificationUserInfoInstallCount @"AUTNotificationUserInfoInstallCount"
 
@@ -161,6 +162,6 @@
  Registers block parameter to be called when user opens the app for the first time after updating. Block is 
  called once registered, even if this function is called later during the app session.
  */
-+ (void)registerForAppUpdatesWithBlock:(void (^)(NSString *oldVersion))block;
++ (void)registerForAppUpdatesWithBlock:(void (^)(NSString *previousVersion, NSString *currentVersion))block;
 
 @end

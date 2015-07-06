@@ -46,8 +46,8 @@ Import `AppUpdateTracker.h` in your `AppDelegate` class and register for `AppUpd
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     
-    [AppUpdateTracker registerForAppUpdatesWithBlock:^(NSString *oldVersion) {
-        NSLog(@"app updated from: %@", oldVersion);
+    [AppUpdateTracker registerForAppUpdatesWithBlock:^(NSString *previousVersion) {
+        NSLog(@"app updated from: %@", previousVersion);
     }];
     [AppUpdateTracker registerForFirstInstallWithBlock:^(NSTimeInterval installTimeSinceEpoch) {
         NSLog(@"first install detected: %f", installTimeSinceEpoch);
