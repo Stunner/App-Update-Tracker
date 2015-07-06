@@ -118,7 +118,7 @@ NSString *const kCurrentVersionKey = @"kCurrentVersionKey";
     if (self = [super init]) {
         self.postedEventsDictionary = [[NSMutableDictionary alloc] initWithCapacity:3];
         
-        __block AppUpdateTracker *weakSelf = self;
+        __weak __typeof__(self) weakSelf = self;
         [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification
                                                           object:nil
                                                            queue:[NSOperationQueue currentQueue]
@@ -235,6 +235,7 @@ NSString *const kCurrentVersionKey = @"kCurrentVersionKey";
     
     [userDefaults setInteger:++useCount forKey:kAUTUseCount];
     [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
+    [userDefaults synchronize];
     
     AUTLog(@"useCount++: %lu", (unsigned long)useCount);
     
@@ -245,6 +246,45 @@ NSString *const kCurrentVersionKey = @"kCurrentVersionKey";
     [self.postedEventsDictionary setObject:@(useCount) forKey:kUseCountKey];
     if (self.useCountBlock) { // TODO: check if these style of blocks are ever called... I'm thinking these may never be used
         self.useCountBlock(useCount);
+    }
+}
+
+- (void)broadcastAppUpdatedfrom:(NSString *)trackingVersion to:(NSString *)version {
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kAUTUserUpgradedApp];
+    
+    // notification
+    NSDictionary *userInfo = @{kAUTNotificationUserInfoPreviousVersionKey : trackingVersion,
+                               kAUTNotificationUserInfoCurrentVersionKey : version};
+    [[NSNotificationCenter defaultCenter] postNotificationName:AUTAppUpdatedNotification
+                                                        object:self
+                                                      userInfo:userInfo];
+    // block
+    [self.postedEventsDictionary setObject:trackingVersion forKey:kPreviousVersionKey];
+    [self.postedEventsDictionary setObject:version forKey:kCurrentVersionKey];
+    if (self.appUpdatedBlock) {
+        self.appUpdatedBlock(trackingVersion, version);
+    }
+}
+
+- (void)broadcastFirstInstallWithInstallCount:(NSUInteger)installCount {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSTimeInterval timeInterval = [userDefaults doubleForKey:kAUTFirstUseTime];
+    if (timeInterval == 0) {
+        timeInterval = [[NSDate date] timeIntervalSince1970];
+        [userDefaults setDouble:timeInterval forKey:kAUTFirstUseTime];
+    }
+    [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
+    
+    // fresh install of the app
+    NSDictionary *userInfo = @{kAUTNotificationUserInfoFirstUseTimeKey : @(timeInterval),
+                               kAUTNotificationUserInfoInstallCount : @(installCount)};
+    [[NSNotificationCenter defaultCenter] postNotificationName:AUTFreshInstallNotification
+                                                        object:self
+                                                      userInfo:userInfo];
+    [self.postedEventsDictionary setObject:@(timeInterval) forKey:kFirstLaunchTimeKey];
+    [self.postedEventsDictionary setObject:@(installCount) forKey:kInstallCountKey];
+    if (self.firstInstallBlock) {
+        self.firstInstallBlock(timeInterval, installCount);
     }
 }
 
@@ -292,18 +332,7 @@ NSString *const kCurrentVersionKey = @"kCurrentVersionKey";
             }
             
             // app updated to current version from version found in <trackingVersion>
-            NSDictionary *userInfo = @{kAUTNotificationUserInfoPreviousVersionKey : trackingVersion,
-                                       kAUTNotificationUserInfoCurrentVersionKey : version};
-            [[NSNotificationCenter defaultCenter] postNotificationName:AUTAppUpdatedNotification
-                                                                object:self
-                                                              userInfo:userInfo];
-            
-            [self.postedEventsDictionary setObject:trackingVersion forKey:kPreviousVersionKey];
-            [self.postedEventsDictionary setObject:version forKey:kCurrentVersionKey];
-            if (self.appUpdatedBlock) {
-                self.appUpdatedBlock(trackingVersion, version);
-            }
-            [userDefaults setBool:YES forKey:kAUTUserUpgradedApp];
+            [self broadcastAppUpdatedfrom:trackingVersion to:version];
             
         } else { // no old version exists - first time opening after install
             AUTLog(@"fresh install detected");
@@ -323,24 +352,7 @@ NSString *const kCurrentVersionKey = @"kCurrentVersionKey";
             }
             AUTLog(@"installation count: %lu", (long)installationCountInteger);
             
-            NSTimeInterval timeInterval = [userDefaults doubleForKey:kAUTFirstUseTime];
-            if (timeInterval == 0) {
-                timeInterval = [[NSDate date] timeIntervalSince1970];
-                [userDefaults setDouble:timeInterval forKey:kAUTFirstUseTime];
-            }
-            
-            // fresh install of the app
-            NSDictionary *userInfo = @{kAUTNotificationUserInfoFirstUseTimeKey : @(timeInterval),
-                                       kAUTNotificationUserInfoInstallCount : @(installationCountInteger)};
-            [[NSNotificationCenter defaultCenter] postNotificationName:AUTFreshInstallNotification
-                                                                object:self
-                                                              userInfo:userInfo];
-            [self.postedEventsDictionary setObject:@(timeInterval) forKey:kFirstLaunchTimeKey];
-            [self.postedEventsDictionary setObject:@(installationCountInteger) forKey:kInstallCountKey];
-            if (self.firstInstallBlock) {
-                self.firstInstallBlock(timeInterval, installationCountInteger);
-            }
-            [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
+            [self broadcastFirstInstallWithInstallCount:installationCountInteger];
         }
         // include what version user updated from, nil if user didn't update
         // (only for initial session)
