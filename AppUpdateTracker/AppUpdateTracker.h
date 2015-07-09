@@ -28,15 +28,17 @@
 
 #import <Foundation/Foundation.h>
 
-#define AUTUseCountUpdatedNotification @"AUTUseCountUpdatedNotification"
-#define AUTAppUpdatedNotification @"AUTAppUpdatedNotification"
-#define AUTFreshInstallNotification @"AUTFreshInstallNotification"
+// notification names
+extern NSString * const AUTUseCountUpdatedNotification;
+extern NSString * const AUTAppUpdatedNotification;
+extern NSString * const AUTFreshInstallNotification;
 
-#define kAUTNotificationUserInfoUseCountKey @"AUTNotificationUserInfoUseCountKey"
-#define kAUTNotificationUserInfoPreviousVersionKey @"AUTNotificationUserInfoPreviousVersionKey"
-#define kAUTNotificationUserInfoCurrentVersionKey @"AUTNotificationUserInfoCurrentVersionKey"
-#define kAUTNotificationUserInfoFirstUseTimeKey @"AUTNotificationUserInfoFirstUseTimeKey"
-#define kAUTNotificationUserInfoInstallCount @"AUTNotificationUserInfoInstallCount"
+// notification keys
+extern NSString * const kAUTNotificationUserInfoUseCountKey;
+extern NSString * const kAUTNotificationUserInfoPreviousVersionKey;
+extern NSString * const kAUTNotificationUserInfoCurrentVersionKey;
+extern NSString * const kAUTNotificationUserInfoFirstUseTimeKey;;
+extern NSString * const kAUTNotificationUserInfoInstallCount;;
 
 #define APP_UPDATE_TRACKER_DEBUG 1
 

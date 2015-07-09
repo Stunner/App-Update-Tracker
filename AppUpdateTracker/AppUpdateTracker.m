@@ -35,18 +35,28 @@
 #define AUTLog(...)
 #endif
 
-NSString *const kAUTCurrentVersion = @"kAUTCurrentVersion";
-NSString *const kAUTPreviousVersion = @"kAUTPreviousVersion";
-NSString *const kAUTFirstUseTime = @"kAUTFirstUseTime";
-NSString *const kAUTUseCount = @"kAUTUseCount";
-NSString *const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
-NSString *const kAUTInstallationCount = @"kAUTInstallationCount";
+NSString * const AUTUseCountUpdatedNotification = @"AUTUseCountUpdatedNotification";
+NSString * const AUTAppUpdatedNotification = @"AUTAppUpdatedNotification";
+NSString * const AUTFreshInstallNotification = @"AUTFreshInstallNotification";
 
-NSString *const kFirstLaunchTimeKey = @"kFirstLaunchTimeKey";
-NSString *const kInstallCountKey = @"kInstallCountKey";
-NSString *const kUseCountKey = @"kUseCountKey";
-NSString *const kPreviousVersionKey = @"kPreviousVersionKey";
-NSString *const kCurrentVersionKey = @"kCurrentVersionKey";
+NSString * const kAUTNotificationUserInfoUseCountKey = @"AUTNotificationUserInfoUseCountKey";
+NSString * const kAUTNotificationUserInfoPreviousVersionKey = @"AUTNotificationUserInfoPreviousVersionKey";
+NSString * const kAUTNotificationUserInfoCurrentVersionKey = @"AUTNotificationUserInfoCurrentVersionKey";
+NSString * const kAUTNotificationUserInfoFirstUseTimeKey = @"AUTNotificationUserInfoFirstUseTimeKey";
+NSString * const kAUTNotificationUserInfoInstallCount = @"AUTNotificationUserInfoInstallCount";
+
+NSString * const kAUTCurrentVersion = @"kAUTCurrentVersion";
+NSString * const kAUTPreviousVersion = @"kAUTPreviousVersion";
+NSString * const kAUTFirstUseTime = @"kAUTFirstUseTime";
+NSString * const kAUTUseCount = @"kAUTUseCount";
+NSString * const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
+NSString * const kAUTInstallationCount = @"kAUTInstallationCount";
+
+NSString * const kFirstLaunchTimeKey = @"kFirstLaunchTimeKey";
+NSString * const kInstallCountKey = @"kInstallCountKey";
+NSString * const kUseCountKey = @"kUseCountKey";
+NSString * const kPreviousVersionKey = @"kPreviousVersionKey";
+NSString * const kCurrentVersionKey = @"kCurrentVersionKey";
 
 @implementation NSString (AUTVersionComparison)
 
