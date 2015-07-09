@@ -1,11 +1,16 @@
 App-Update-Tracker
 ==================
 
-AppUpdateTracker is a simple, lightweight iOS library intended to determine basic app install/update behavior:
+AppUpdateTracker is a simple, lightweight iOS library intended to determine basic app install/update behavior. The following is a list of when events are triggered:
 
-- when the user launches the app for the first time
-- when the user opens the app after updating, and **from which version the user updated from**
-- number of times the user opened a specific version of the app
+* when the user launches the app for the first time, provides:
+  * **timestamp** of when user opened app for the first time, in seconds since epoch
+  * **installation count** representing the number of times the user has opened the app for the first time on the same device
+* when the user opens the app for the first time after updating, provides:
+  * the **previous version** the user updated from
+  * the **current version** of the app (provided for convenience)
+* when the user brings the app to the foreground, provides:
+  * **usage count** representing how many times the app has been opened (includes bringing app to foreground after resigning active, not only cold start)
 
 This library posts an alert or executes a block with information on one (and only one) of the 3 aforementioned behaviors per app session (each time the app is run).
 
@@ -16,7 +21,7 @@ This library posts an alert or executes a block with information on one (and onl
 To install with [CocoaPods](http://cocoapods.org/) include the following in your Podfile:
 
 ```ruby
-pod 'App-Update-Tracker', '~> 1.0'
+pod 'App-Update-Tracker', '~> 2.0'
 ```
 
 Then install:
@@ -25,7 +30,7 @@ Then install:
 $ pod install
 ```
 
-Consult the ["Getting Started" guide for more information](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking).
+Consult the ["Getting Started"](https://github.com/AFNetworking/AFNetworking/wiki/Getting-Started-with-AFNetworking) guide (taken from the lovely AFNetworking project) for more information.
 
 ### The Old Fashioned Way
 
@@ -46,11 +51,11 @@ Import `AppUpdateTracker.h` in your `AppDelegate` class and register for `AppUpd
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     
-    [AppUpdateTracker registerForAppUpdatesWithBlock:^(NSString *previousVersion) {
-        NSLog(@"app updated from: %@", previousVersion);
+    [AppUpdateTracker registerForAppUpdatesWithBlock:^(NSString *previousVersion, NSString *currentVersion) {
+        NSLog(@"app updated from: %@ to: %@", previousVersion, currentVersion);
     }];
-    [AppUpdateTracker registerForFirstInstallWithBlock:^(NSTimeInterval installTimeSinceEpoch) {
-        NSLog(@"first install detected: %f", installTimeSinceEpoch);
+    [AppUpdateTracker registerForFirstInstallWithBlock:^(NSTimeInterval installTimeSinceEpoch, NSUInteger installCount) {
+        NSLog(@"first install detected at: %f amount of times app was (re)installed: %lu", installTimeSinceEpoch, (unsigned long)installCount);
     }];
     [AppUpdateTracker registerForIncrementedUseCountWithBlock:^(NSUInteger useCount) {
         NSLog(@"incremented use count to: %lu", (unsigned long)useCount);
@@ -61,6 +66,16 @@ Import `AppUpdateTracker.h` in your `AppDelegate` class and register for `AppUpd
 ```
 
 Consult the sample project for more info.
+
+# Migration
+
+### 1.x to 2.0
+
+Potential codebreaking changes:
+* Added `installCount` to first install event, this changes the first install block registration method to `+ (void)registerForFirstInstallWithBlock:(void (^)(NSTimeInterval installTimeSinceEpoch, NSUInteger installCount))block`.
+* Changed `oldVersion` to `previousVersion` for app updated event, this changes the notification previous version key to `kAUTNotificationUserInfoPreviousVersionKey`.
+* Added `currentVersion` to app updateded event, this changes the app updated block registration method to `+ (void)registerForAppUpdatesWithBlock:(void (^)(NSString *previousVersion, NSString *currentVersion))block`.
+* Changed `+ (BOOL)getUserUpgradedApp` to `+ (BOOL)getUserUpdatedApp`.
 
 # License
 
