@@ -2,11 +2,11 @@
 Pod::Spec.new do |s|
 
   s.name         = "App-Update-Tracker"
-  s.version      = "1.2.0"
+  s.version      = "2.0.0"
   s.summary      = "AppUpdateTracker is a simple, lightweight iOS library intended to determine basic app install/update behavior."
 
   s.description  =  <<-DESC
-                   This library allows you to easily determine when the user uses your app after a fresh install, when the user updates your app (and the version from which (s)he updated, and how many times the user has opened a given version of your app. This library was created in order to help determine update information so that appropriate data migration logic could be run after an app update.
+                   This library allows you to easily determine when the user uses your app after a fresh install, when the user updates your app (and the version from which (s)he updated), and how many times the user has opened a given version of your app. This library was created in order to help determine update information so that appropriate data migration logic can be run after an app update.
                    DESC
 
   s.homepage     = "https://github.com/Stunner/App-Update-Tracker"
