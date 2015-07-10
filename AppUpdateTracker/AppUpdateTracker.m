@@ -128,7 +128,7 @@ NSString * const kCurrentVersionKey = @"kCurrentVersionKey";
     if (self = [super init]) {
         self.postedEventsDictionary = [[NSMutableDictionary alloc] initWithCapacity:3];
         
-        __weak __typeof__(self) weakSelf = self;
+        __unsafe_unretained __typeof__(self) weakSelf = self;
         [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification
                                                           object:nil
                                                            queue:[NSOperationQueue currentQueue]
