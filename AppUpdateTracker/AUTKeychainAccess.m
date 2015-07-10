@@ -36,7 +36,7 @@
     
     NSData *result = nil;
     CFTypeRef inTypeRef = (__bridge CFTypeRef)result;
-    OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)searchDictionary, &inTypeRef);
+    OSStatus __unused status = SecItemCopyMatching((__bridge CFDictionaryRef)searchDictionary, &inTypeRef);
     result = (__bridge_transfer NSData *)inTypeRef;
     return result;
 }
