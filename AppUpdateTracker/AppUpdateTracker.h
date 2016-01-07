@@ -144,6 +144,11 @@ extern NSString * const kAUTNotificationUserInfoInstallCount;;
 + (NSUInteger)getUseCount;
 
 /**
+ Returns `YES` if the current session is the first session after installing.
+ */
++ (BOOL)getUserInstalledApp;
+
+/**
  Returns `YES` if the current session is the first session after updating.
  */
 + (BOOL)getUserUpdatedApp;

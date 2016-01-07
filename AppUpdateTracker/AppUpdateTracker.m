@@ -50,6 +50,7 @@ NSString * const kAUTPreviousVersion = @"kAUTPreviousVersion";
 NSString * const kAUTFirstUseTime = @"kAUTFirstUseTime";
 NSString * const kAUTUseCount = @"kAUTUseCount";
 NSString * const kAUTUserUpgradedApp = @"kAUTUserUpgradedApp";
+NSString * const kAUTUserInstalledApp = @"kAUTUserInstalledApp";
 NSString * const kAUTInstallationCount = @"kAUTInstallationCount";
 
 NSString * const kFirstLaunchTimeKey = @"kFirstLaunchTimeKey";
@@ -186,6 +187,10 @@ NSString * const kCurrentVersionKey = @"kCurrentVersionKey";
     return [[NSUserDefaults standardUserDefaults] integerForKey:kAUTUseCount];
 }
 
++ (BOOL)getUserInstalledApp {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kAUTUserInstalledApp];
+}
+
 + (BOOL)getUserUpdatedApp {
     return [[NSUserDefaults standardUserDefaults] boolForKey:kAUTUserUpgradedApp];
 }
@@ -245,6 +250,7 @@ NSString * const kCurrentVersionKey = @"kCurrentVersionKey";
     
     [userDefaults setInteger:++useCount forKey:kAUTUseCount];
     [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
+    [userDefaults setBool:NO forKey:kAUTUserInstalledApp];
     [userDefaults synchronize];
     
     AUTLog(@"useCount++: %lu", (unsigned long)useCount);
@@ -261,6 +267,7 @@ NSString * const kCurrentVersionKey = @"kCurrentVersionKey";
 
 - (void)broadcastAppUpdatedfrom:(NSString *)trackingVersion to:(NSString *)version {
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kAUTUserUpgradedApp];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kAUTUserInstalledApp];
     
     // notification
     NSDictionary *userInfo = @{kAUTNotificationUserInfoPreviousVersionKey : trackingVersion,
@@ -284,6 +291,7 @@ NSString * const kCurrentVersionKey = @"kCurrentVersionKey";
         [userDefaults setDouble:timeInterval forKey:kAUTFirstUseTime];
     }
     [userDefaults setBool:NO forKey:kAUTUserUpgradedApp];
+    [userDefaults setBool:YES forKey:kAUTUserInstalledApp];
     
     // fresh install of the app
     NSDictionary *userInfo = @{kAUTNotificationUserInfoFirstUseTimeKey : @(timeInterval),
